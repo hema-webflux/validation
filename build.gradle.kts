@@ -4,7 +4,8 @@ plugins {
     signing
 }
 
-apply(from = providers.gradleProperty("package.configure").get())
+val file = providers.gradleProperty("configure.file").get()
+apply(from = "${System.getProperty("user.home")}/.gradle/${file}")
 
 group = providers.gradleProperty("package.group").get()
 version = providers.gradleProperty("package.version").get()
@@ -64,12 +65,12 @@ publishing {
     repositories {
         maven {
 
-            val repoProperties = if (version.toString().endsWith("SNAPSHOT")) "snapshot" else "release"
+            val repoProperties: String = if (version.toString().endsWith("SNAPSHOT")) "snapshot" else "release"
             url = uri(providers.gradleProperty("package.${repoProperties}.repo").get())
 
             credentials {
-                username = ext.get("sonaUsername").toString()
-                password = ext.get("sonaPassword").toString()
+                username = project.ext.get("sonaUsername").toString()
+                password = project.ext.get("sonaPassword").toString()
             }
         }
     }
@@ -82,16 +83,17 @@ dependencies {
 
 signing {
 
-    val keyId = ext.get("signing.keyId").toString()
-    val password = ext.get("signing.password").toString()
-    val secretKey = ext.get("signing.secretKeyRingFile").toString()
+    val keyId: String = project.ext.get("signing.keyId").toString()
+    val password: String = project.ext.get("signing.password").toString()
+    val secretKey: String = project.ext.get("signing.secretKeyRingFile").toString()
 
-    useInMemoryPgpKeys(keyId,secretKey,password)
+    useInMemoryPgpKeys(keyId, secretKey, password)
+
     sign(publishing.publications["mavenJava"])
 }
 
 task("hello") {
-    println(ext.get("sonaUsername"))
+    println(project.ext.get("sonaUsername"))
 }
 
 tasks.javadoc {
