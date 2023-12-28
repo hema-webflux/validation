@@ -4,8 +4,6 @@ plugins {
     signing
 }
 
-apply(from = providers.gradleProperty("package.publish.configure").get())
-
 group = providers.gradleProperty("package.group").get()
 version = providers.gradleProperty("package.version").get()
 
@@ -16,6 +14,9 @@ repositories {
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
@@ -61,9 +62,10 @@ publishing {
     repositories {
         maven {
 
-            url = uri(providers.gradleProperty("package.publish.url").get())
+            val repoProperties = if (version.toString().endsWith("SNAPSHOT")) "snapshot" else "release"
+            url = uri(providers.gradleProperty("package.${repoProperties}.repo").get())
 
-            credentials{
+            credentials {
 
             }
         }
@@ -82,6 +84,12 @@ signing {
 
 task("hello") {
     println(findProperty("sonaUsername"))
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
 }
 
 tasks.test {
