@@ -1,16 +1,12 @@
 package io.github.validation;
 
-import io.github.validation.contacts.Attribute;
-import io.github.validation.contacts.Message;
+import io.github.validation.contracts.Attribute;
+import io.github.validation.contracts.Message;
+import io.github.validation.contracts.ValidateRule;
 
 import java.util.Map;
 
-class UserValidator extends Validator implements Attribute, Message {
-
-    @Override
-    protected void rules() {
-
-    }
+class UserValidator extends FormValidator implements Attribute, Message {
 
     @Override
     public Map<String, String> attributes(Map<String, String> map) {
@@ -21,12 +17,22 @@ class UserValidator extends Validator implements Attribute, Message {
     public Map<String, String> messages(Map<String, String> map) {
         return null;
     }
+
+    @Override
+    protected void rules(ValidateRule validateRule) {
+
+    }
+
+    @Override
+    protected boolean authorize() {
+        return false;
+    }
 }
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
-        Validator userValidator = new UserValidator();
+        FormValidator userValidator = new UserValidator();
 
         System.out.println(userValidator.isSubClassOf(Message.class));
 

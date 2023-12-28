@@ -4,7 +4,7 @@ plugins {
     signing
 }
 
-//apply(from = providers.gradleProperty("package.publish.settings").get())
+apply(from = providers.gradleProperty("package.publish.configure").get())
 
 group = providers.gradleProperty("package.group").get()
 version = providers.gradleProperty("package.version").get()
@@ -30,40 +30,41 @@ publishing {
         create<MavenPublication>("mavenJava") {
             pom {
                 name = project.name
-                description = providers.gradleProperty("package.description").get()
-                url = providers.gradleProperty("package.scm.url").get()
+                description = providers.gradleProperty("pom.description").get()
+                url = providers.gradleProperty("pom.scm.url").get()
 
                 licenses {
                     license {
-                        name = providers.gradleProperty("package.license.name").get()
-                        url = providers.gradleProperty("package.license.url").get()
+                        name = providers.gradleProperty("pom.license.name").get()
+                        url = providers.gradleProperty("pom.license.url").get()
                     }
                 }
 
                 developers {
                     developer {
-                        id = providers.gradleProperty("package.developer.id").get()
-                        name = providers.gradleProperty("package.developer.name").get()
-                        email = providers.gradleProperty("package.developer.email").get()
+                        id = providers.gradleProperty("pom.developer.id").get()
+                        name = providers.gradleProperty("pom.developer.name").get()
+                        email = providers.gradleProperty("pom.developer.email").get()
                     }
                 }
 
                 scm {
-                    connection = providers.gradleProperty("package.scm.connection").get()
-                    developerConnection = providers.gradleProperty("package.scm.developerConnection").get()
-                    url = providers.gradleProperty("package.scm.url").get()
+                    connection = providers.gradleProperty("pom.scm.connection").get()
+                    developerConnection = providers.gradleProperty("pom.scm.developerConnection").get()
+                    url = providers.gradleProperty("pom.scm.url").get()
                 }
 
             }
         }
     }
+
     repositories {
         maven {
 
             url = uri(providers.gradleProperty("package.publish.url").get())
 
             credentials{
-                username
+
             }
         }
     }
@@ -75,11 +76,12 @@ dependencies {
 }
 
 signing {
+    useGpgCmd()
     sign(publishing.publications["mavenJava"])
 }
 
 task("hello") {
-    println("sonatypeUsername")
+    println(findProperty("sonaUsername"))
 }
 
 tasks.test {
