@@ -4,6 +4,8 @@ plugins {
     signing
 }
 
+apply(from = providers.gradleProperty("package.configure").get())
+
 group = providers.gradleProperty("package.group").get()
 version = providers.gradleProperty("package.version").get()
 
@@ -66,7 +68,8 @@ publishing {
             url = uri(providers.gradleProperty("package.${repoProperties}.repo").get())
 
             credentials {
-
+                username = ext.get("sonaUsername").toString()
+                password = ext.get("sonaPassword").toString()
             }
         }
     }
@@ -78,12 +81,17 @@ dependencies {
 }
 
 signing {
-    useGpgCmd()
+
+    val keyId = ext.get("signing.keyId").toString()
+    val password = ext.get("signing.password").toString()
+    val secretKey = ext.get("signing.secretKeyRingFile").toString()
+
+    useInMemoryPgpKeys(keyId,secretKey,password)
     sign(publishing.publications["mavenJava"])
 }
 
 task("hello") {
-    println(findProperty("sonaUsername"))
+    println(ext.get("sonaUsername"))
 }
 
 tasks.javadoc {
