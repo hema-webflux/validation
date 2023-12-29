@@ -1,25 +1,20 @@
 package io.github.validation.contracts;
 
+import io.github.validation.exception.ValidationException;
 import io.github.validation.support.MessageBag;
 
 import java.util.Map;
 
 public interface Validator {
 
-    Map<String, Object> validate();
+    Map<String, Object> validated() throws ValidationException;
 
-    Map<String, Object> validated();
+    <T> T model();
 
-   <T> Validator merge(T extras);
+    boolean fails();
+
+    String[] field();
 
     MessageBag errors();
-
-    default boolean empty(String field){
-        return has(field) && validate().get(field) != null;
-    }
-
-    default boolean has(String field) {
-        return validate().containsKey(field);
-    }
 
 }

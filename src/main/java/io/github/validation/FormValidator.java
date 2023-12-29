@@ -1,8 +1,13 @@
 package io.github.validation;
 
 import io.github.validation.contracts.ValidateRule;
+import io.github.validation.contracts.ValidatesWhenResolved;
 
-public abstract class FormValidator {
+public abstract class FormValidator implements ValidatesWhenResolved {
+
+    public void test(){
+
+    }
 
     /**
      * Define validate form rules.
