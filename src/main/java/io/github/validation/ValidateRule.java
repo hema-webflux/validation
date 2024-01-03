@@ -79,6 +79,42 @@ final public class ValidateRule {
         return store("image");
     }
 
+    public ValidateRule bool() {
+        return store("bool");
+    }
+
+    public ValidateRule after(String date) {
+        return buffer("after:", date);
+    }
+
+    public ValidateRule extensions(String... types) {
+        return buffer();
+    }
+
+    public ValidateRule phone() {
+        return store("phone");
+    }
+
+    public ValidateRule bankcard() {
+        return store("bankcard");
+    }
+
+    public ValidateRule idCard() {
+        return store("idCard");
+    }
+
+    public ValidateRule date() {
+        return store("date");
+    }
+
+    public ValidateRule dateformat(String format) {
+        return buffer("dateformat:", format);
+    }
+
+    public ValidateRule between(long max, long min) {
+        return buffer("between:", max, min);
+    }
+
     public ValidateRule buffer(String... values) {
 
         StringBuilder builder = getBuilder();

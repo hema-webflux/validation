@@ -77,6 +77,7 @@ publishing {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web:3.2.1")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

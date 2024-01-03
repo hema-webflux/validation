@@ -1,5 +1,13 @@
 package io.github.validation;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.SpringApplication;
+
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.regex.Pattern;
+
 class UserValidator extends FormValidator {
 
     public UserValidator() {
@@ -20,7 +28,8 @@ class UserValidator extends FormValidator {
 }
 
 public class Main {
-    public static void main(String[] args) {
-        new UserValidator();
+    public static void main(String[] args) throws ParseException {
+
+//        SpringApplication.run();
     }
 }
