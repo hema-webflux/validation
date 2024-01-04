@@ -2,6 +2,7 @@ package io.github.validation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -27,9 +28,10 @@ class UserValidator extends FormValidator {
     }
 }
 
+@SpringBootApplication
 public class Main {
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
 
-//        SpringApplication.run();
+        SpringApplication.run(Main.class, args);
     }
 }

@@ -1,4 +1,4 @@
 package io.github.validation.support;
 
-public class MessageBag {
+public final class MessageBag {
 }

@@ -2,7 +2,7 @@ package io.github.validation;
 
 import java.util.*;
 
-final public class ValidateRule {
+public final class ValidateRule {
 
     private String field;
 
@@ -99,7 +99,7 @@ final public class ValidateRule {
         return store("bankcard");
     }
 
-    public ValidateRule idCard() {
+    public ValidateRule cre() {
         return store("idCard");
     }
 
@@ -111,9 +111,13 @@ final public class ValidateRule {
         return buffer("dateformat:", format);
     }
 
-    public ValidateRule between(long max, long min) {
-        return buffer("between:", max, min);
+    public ValidateRule name() {
+        return store("name");
     }
+
+//    public ValidateRule between(long max, long min) {
+//        return buffer("between:", max, min);
+//    }
 
     public ValidateRule buffer(String... values) {
 
