@@ -1,7 +1,7 @@
-package io.github.validation.contracts;
+package hema.web.validation.contracts;
 
-import io.github.validation.exception.ValidationException;
-import io.github.validation.support.MessageBag;
+import hema.web.validation.exception.ValidationException;
+import hema.web.validation.support.MessageBag;
 
 import java.util.Map;
 

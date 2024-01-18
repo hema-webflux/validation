@@ -1,4 +1,4 @@
-package io.github.validation.contracts;
+package hema.web.validation.contracts;
 
 public interface Rule {
 

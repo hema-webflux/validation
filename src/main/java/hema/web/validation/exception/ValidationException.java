@@ -1,7 +1,7 @@
-package io.github.validation.exception;
+package hema.web.validation.exception;
 
-import io.github.validation.contracts.Validator;
-import io.github.validation.contracts.httpkernel.HttpExceptionInterface;
+import hema.web.validation.contracts.httpkernel.HttpExceptionInterface;
+import hema.web.validation.contracts.Validator;
 
 final public class ValidationException extends Exception implements HttpExceptionInterface {
 

@@ -1,4 +1,4 @@
-package io.github.validation.exception;
+package hema.web.validation.exception;
 
 final public class UnauthorizedException extends RuntimeException{
 }

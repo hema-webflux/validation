@@ -1,12 +1,14 @@
-package io.github.validation;
+package hema.web.validation;
 
-import io.github.validation.contracts.ValidatesWhenResolved;
+import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.contracts.ValidatesWhenResolved;
 
-public abstract class FormValidator implements ValidatesWhenResolved {
+import java.util.Map;
+
+public abstract class Validator implements ValidatesWhenResolved {
 
     /**
      * Define validate form rules.
-     *
      */
     protected abstract void rules(ValidateRule rule);
 
@@ -17,7 +19,8 @@ public abstract class FormValidator implements ValidatesWhenResolved {
      */
     protected abstract boolean authorize();
 
-    private boolean isSubClassOf(Class<?> type) {
+    private <T> boolean isSubClassOf(Class<T> type) {
         return type.isInstance(this);
     }
+
 }
