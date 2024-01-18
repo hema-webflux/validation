@@ -1,8 +1,12 @@
 package hema.web.validation;
 
-public class Rule {
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-    private final static String[] defaultRules = {
+public abstract class AbstractValidateRuleProxyInvocationHandler {
+
+    private final Set<String> rules = new HashSet<>(Arrays.asList(
             "required", "nullable", "unique", "same", "integer", "numeric",
             "email", "phone", "min", "max", "confirmed", "json", "map",
             "inMap", "bool", "date", "in", "before", "after", "between",
@@ -13,6 +17,9 @@ public class Rule {
             "lowercase", "mimes", "missing", "missing_if", "required_unless",
             "required_with", "required_with_all", "required_without",
             "require_map_keys", "url", "uppercase", "size"
-    };
+    ));
 
+    final protected boolean hasRule(String rule) {
+        return rules.contains(rule);
+    }
 }
