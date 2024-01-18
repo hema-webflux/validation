@@ -6,20 +6,22 @@ import java.util.Set;
 
 public abstract class AbstractValidateRuleProxyInvocationHandler {
 
-    private final Set<String> rules = new HashSet<>(Arrays.asList(
+    private static final String[] rules = {
             "required", "nullable", "unique", "same", "integer", "numeric",
             "email", "phone", "min", "max", "confirmed", "json", "map",
             "inMap", "bool", "date", "in", "before", "after", "between",
-            "decimal", "assert_enum", "required_if", "exists", "regex",
-            "accepted", "accepted_if", "date_equals", "different", "digits",
-            "digits_between", "distinct", "distinct_strict", "distinct_ignore_case",
-            "start_with", "end_with", "doesnt_start_with", "doesnt_end_with",
-            "lowercase", "mimes", "missing", "missing_if", "required_unless",
-            "required_with", "required_with_all", "required_without",
-            "require_map_keys", "url", "uppercase", "size"
-    ));
+            "decimal", "assertEnum", "requiredIf", "exists", "regex",
+            "accepted", "acceptedIf", "dateEquals", "different", "digits",
+            "digitsBetween", "distinct", "distinctStrict", "distinctIgnore_case",
+            "startWith", "endWith", "doesntStartWith", "doesntEndWith",
+            "lowercase", "mimes", "missing", "missingIf", "requiredUnless",
+            "requiredWith", "requiredWithAll", "requiredWithout",
+            "requireMapKeys", "url", "uppercase", "size"
+    };
+
+    private static final Set<String> ruleWrapper = new HashSet<>(Arrays.asList(rules));
 
     final protected boolean hasRule(String rule) {
-        return rules.contains(rule);
+        return ruleWrapper.contains(rule);
     }
 }
