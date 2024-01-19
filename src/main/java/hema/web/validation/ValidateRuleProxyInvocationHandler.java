@@ -8,20 +8,20 @@ public final class ValidateRuleProxyInvocationHandler implements InvocationHandl
 
     private final String endMethod = "rules";
 
-    private final String[] normalRules = {
+    private final static String[] normalRules = {
             "required", "nullable", "string", "integer", "numeric", "bool", "json",
             "url", "uppercase", "lowercase", "accepted", "email", "phone", "map",
             "distinct", "date", "bank", "card", "identityNumber", "bankCardNumber", "array"
     };
 
-    private final String[] singleParameterRules = {
+    private final static String[] singleParameterRules = {
             "size", "same", "digits", "regex", "before", "after", "min", "max",
             "acceptedIf", "confirmed", "dateEquals", "different", "isEnum"
     };
 
-    private final String[] fixedParametersRules = {"unique", "exists", "digitsBetween", "between", "decimal"};
+    private final static String[] fixedParametersRules = {"unique", "exists", "digitsBetween", "between", "decimal"};
 
-    private final String[] extendParametersRules = {
+    private final static String[] extendParametersRules = {
             "in", "requiredUnless", "requiredWith", "requiredWithout", "startWith", "endWith", "doesntStartWith", "doesntEndWith"
     };
 
