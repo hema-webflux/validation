@@ -24,12 +24,12 @@ public class ValidatorTests extends FormValidator implements Message, Attribute 
     }
 
     @Override
-    public Map<String, String> attributes(Map<String, String> map) {
+    public Map<String, String> attributes() {
         return null;
     }
 
     @Override
-    public Map<String, String> messages(Map<String, String> map) {
+    public Map<String, String> messages() {
         return null;
     }
 }

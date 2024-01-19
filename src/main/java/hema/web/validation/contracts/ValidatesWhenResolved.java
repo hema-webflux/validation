@@ -3,7 +3,6 @@ package hema.web.validation.contracts;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public interface ValidatesWhenResolved {
@@ -24,14 +23,14 @@ public interface ValidatesWhenResolved {
         }
     }
 
-
     interface Attribute extends Anonymous {
-        Map<String, String> attributes(Map<String, String> map);
+
+        Map<String, String> attributes();
 
         class AnonymousAttribute implements Attribute {
 
             @Override
-            public Map<String, String> attributes(Map<String, String> map) {
+            public Map<String, String> attributes() {
                 return null;
             }
 
@@ -43,12 +42,13 @@ public interface ValidatesWhenResolved {
     }
 
     interface Message extends Anonymous {
-        Map<String, String> messages(Map<String, String> map);
+
+        Map<String, String> messages();
 
         class AnonymousMessage implements Message {
 
             @Override
-            public Map<String, String> messages(Map<String, String> map) {
+            public Map<String, String> messages() {
                 return null;
             }
 

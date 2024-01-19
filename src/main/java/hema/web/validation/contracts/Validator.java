@@ -9,7 +9,7 @@ public interface Validator {
 
     Map<String, Object> validated() throws ValidationException;
 
-    <T> T model();
+    <T> T getModel(Class<T> kind);
 
     boolean fails();
 

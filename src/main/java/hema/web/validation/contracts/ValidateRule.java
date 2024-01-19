@@ -1,7 +1,6 @@
 package hema.web.validation.contracts;
 
 import java.util.Map;
-import java.util.Set;
 
 public interface ValidateRule {
 
@@ -23,7 +22,7 @@ public interface ValidateRule {
 
     ValidateRule url();
 
-    ValidateRule size();
+    ValidateRule size(int value);
 
     ValidateRule uppercase();
 
@@ -49,11 +48,15 @@ public interface ValidateRule {
 
     ValidateRule phone();
 
-    ValidateRule min();
+    ValidateRule identityNumber();
 
-    ValidateRule max();
+    ValidateRule bankCardNumber();
 
-    ValidateRule confirmed();
+    ValidateRule min(int value);
+
+    ValidateRule max(int value);
+
+    ValidateRule confirmed(String field);
 
     ValidateRule json();
 
@@ -109,7 +112,7 @@ public interface ValidateRule {
 
     ValidateRule decimal(int min, int max);
 
-    <T> ValidateRule assertEnum(Class<T> enumClass);
+    <T> ValidateRule isEnum(Class<T> enumClass);
 
     Map<String, String[]> rules();
 }

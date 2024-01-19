@@ -20,17 +20,9 @@ public abstract class FormValidator implements ValidatesWhenResolved {
         this.container = container;
     }
 
-    /**
-     * Define validate form rules.
-     */
-    protected abstract ValidateRule rules(ValidateRule rule);
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return boolean
-     */
     protected abstract boolean authorize();
+
+    protected abstract ValidateRule rules(ValidateRule rule);
 
     @Override
     public void validateResolved() throws ValidationException {
