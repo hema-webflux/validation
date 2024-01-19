@@ -16,8 +16,8 @@ public abstract class AbstractValidateRuleProxyInvocationHandler {
             "startWith", "endWith", "doesntStartWith", "doesntEndWith",
             "lowercase", "mimes", "missing", "missingIf", "requiredUnless",
             "requiredWith", "requiredWithAll", "requiredWithout",
-            "requireMapKeys", "url", "uppercase", "size"
-    };
+            "requireMapKeys", "url", "uppercase", "size", "array", "inArray",
+            };
 
     private static final Set<String> ruleWrapper = new HashSet<>(Arrays.asList(rules));
 
