@@ -1,7 +1,7 @@
 package hema.web.validation;
 
 import hema.web.validation.exception.ValidationException;
-import hema.web.validation.support.MessageBag;
+import hema.web.validation.support.ValidateMessageBag;
 
 import static hema.web.validation.contracts.ValidatesWhenResolved.*;
 
@@ -45,7 +45,7 @@ final class Validator implements hema.web.validation.contracts.Validator {
     }
 
     @Override
-    public MessageBag errors() {
+    public ValidateMessageBag errors() {
         return null;
     }
 }

@@ -22,7 +22,11 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
     protected abstract boolean authorize();
 
-    protected abstract ValidateRule rules(ValidateRule rule);
+    private void execRule(ValidateRule rule) {
+        rules(rule);
+    }
+
+    protected abstract void rules(ValidateRule rule);
 
     @Override
     public void validateResolved() throws ValidationException {
@@ -70,7 +74,9 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
     final protected Validator createDefaultValidator(Factory factory) {
 
-        ValidateRule validateRule = rules(container.getBean(ValidateRule.class));
+        ValidateRule validateRule = container.getBean(ValidateRule.class);
+
+        execRule(validateRule);
 
         Message message = isSubClassOf(Message.class)
                 ? (Message) this

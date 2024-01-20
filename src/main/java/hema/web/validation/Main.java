@@ -6,18 +6,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 //@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
 
-        Subject proxy = (Subject) java.lang.reflect.Proxy.newProxyInstance(Subject.class.getClassLoader(), new Class[]{Subject.class}, new Proxy());
+        Map<String, Set<Integer>> maps = new HashMap<>();
 
-        proxy.sayHello();
+        maps.put("a", new HashSet<>(List.of(1, 2)));
+        maps.put("b", new HashSet<>(List.of(3, 4)));
+        maps.put("c", new HashSet<>(List.of(5, 6)));
 
-        proxy.rules();
+        System.out.println(maps.values().stream().flatMap(Set::stream).collect(Collectors.toSet()));
+
+//        Subject proxy = (Subject) java.lang.reflect.Proxy.newProxyInstance(Subject.class.getClassLoader(), new Class[]{Subject.class}, new Proxy());
+//
+//        proxy.sayHello();
+//
+//        proxy.rules();
     }
 }
 

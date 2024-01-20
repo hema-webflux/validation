@@ -12,10 +12,10 @@ public class ValidatorTests extends FormValidator implements Message, Attribute 
     }
 
     @Override
-    protected ValidateRule rules(ValidateRule rule) {
+    protected void rules(ValidateRule rule) {
         rule.field("name").required().string();
         rule.field("email").required().email();
-        return rule.field("phone").required().phone().unique("users", "phone");
+        rule.field("phone").required().phone().unique("users", "phone");
     }
 
     @Override
