@@ -37,6 +37,10 @@ public final class ValidateRuleProxyInvocationHandler implements InvocationHandl
         defaultRules.put("extendParametersRules", new HashSet<>(Arrays.asList(extendParametersRules)));
     }
 
+    private boolean hasRuleMethod(String name, String rule) {
+        return defaultRules.get(name).contains(rule);
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         return null;

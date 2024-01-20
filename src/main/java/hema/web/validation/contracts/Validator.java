@@ -9,6 +9,8 @@ public interface Validator {
 
     Map<String, Object> validated() throws ValidationException;
 
+    Map<String, String[]> rules();
+
     <T> T getModel(Class<T> kind);
 
     boolean fails();

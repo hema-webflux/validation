@@ -1,5 +1,6 @@
 package hema.web.validation.support;
 
+import hema.web.validation.contracts.Validator;
 import hema.web.validation.contracts.message.MessageBag;
 import hema.web.validation.contracts.message.MessageProvider;
 import org.springframework.lang.Nullable;
@@ -11,7 +12,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public record ValidateMessageBag(Map<String, Set<String>> messages) implements MessageBag, MessageProvider {
+public record ValidateMessageBag(
+        Map<String, Set<String>> messages,
+        Validator validator
+) implements MessageBag, MessageProvider {
 
     @Override
     public MessageBag getMessageBag() {
