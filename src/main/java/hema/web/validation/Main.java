@@ -1,51 +1,25 @@
 package hema.web.validation;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.support.ValidateRuleProxyConfiguration;
 
 //@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
 
-        Map<String, Set<Integer>> maps = new HashMap<>();
+        ValidateRule validateRule = new ValidateRuleProxyConfiguration().validateRule();
 
-        maps.put("a", new HashSet<>(List.of(1, 2)));
-        maps.put("b", new HashSet<>(List.of(3, 4)));
-        maps.put("c", new HashSet<>(List.of(5, 6)));
+        validateRule.field("name")
+                .after("date")
+                .before("age")
+                .max(20).min(10)
+                .exists("users","name")
+                .unique("users","name");
 
-        System.out.println(maps.values().stream().flatMap(Set::stream).collect(Collectors.toSet()));
+        validateRule.rules().forEach((k,v) -> {
+            System.out.println(k);
+            System.out.println(v);
+        });
 
-//        Subject proxy = (Subject) java.lang.reflect.Proxy.newProxyInstance(Subject.class.getClassLoader(), new Class[]{Subject.class}, new Proxy());
-//
-//        proxy.sayHello();
-//
-//        proxy.rules();
-    }
-}
-
-interface Subject {
-    Subject sayHello();
-
-    Map<String, String[]> rules();
-}
-
-class Proxy implements InvocationHandler {
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-
-        System.out.println("call proxy");
-
-        if (method.getName().equals("rules")) {
-            return new HashMap<>();
-        }
-
-        return proxy;
     }
 }

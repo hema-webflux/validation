@@ -1,10 +1,13 @@
 package hema.web.validation.contracts;
 
+import org.springframework.lang.NonNull;
+
 import java.util.Map;
+import java.util.Set;
 
 public interface ValidateRule {
 
-    ValidateRule field(String value);
+    ValidateRule field(@NonNull String value);
 
     ValidateRule required();
 
@@ -22,7 +25,7 @@ public interface ValidateRule {
 
     ValidateRule url();
 
-    ValidateRule size(int value);
+    ValidateRule size(@NonNull int value);
 
     ValidateRule uppercase();
 
@@ -30,15 +33,15 @@ public interface ValidateRule {
 
     ValidateRule accepted();
 
-    ValidateRule acceptedIf(String value);
+    ValidateRule acceptedIf(@NonNull String value);
 
-    ValidateRule unique(String table, String column);
+    ValidateRule unique(@NonNull String table, @NonNull String column);
 
-    ValidateRule exists(String table, String column);
+    ValidateRule exists(@NonNull String table, @NonNull String column);
 
-    ValidateRule same(String field);
+    ValidateRule same(@NonNull String field);
 
-    ValidateRule regex(String pattern);
+    ValidateRule regex(@NonNull String pattern);
 
     ValidateRule integer();
 
@@ -52,11 +55,11 @@ public interface ValidateRule {
 
     ValidateRule bankCardNumber();
 
-    ValidateRule min(int value);
+    ValidateRule min(@NonNull int value);
 
-    ValidateRule max(int value);
+    ValidateRule max(@NonNull int value);
 
-    ValidateRule confirmed(String field);
+    ValidateRule confirmed(@NonNull String field);
 
     ValidateRule json();
 
@@ -90,29 +93,29 @@ public interface ValidateRule {
 
     ValidateRule missingIf(String... values);
 
+    ValidateRule in(String... values);
+
     ValidateRule bool();
 
     ValidateRule date();
 
-    ValidateRule dateEquals(String date);
+    ValidateRule dateEquals(@NonNull String date);
 
-    ValidateRule different(String field);
+    ValidateRule different(@NonNull String field);
 
-    ValidateRule digits(int length);
+    ValidateRule digits(@NonNull int length);
 
-    ValidateRule digitsBetween(int min, int max);
+    ValidateRule digitsBetween(@NonNull int min, @NonNull int max);
 
-    ValidateRule in(String... values);
+    ValidateRule before(@NonNull String value);
 
-    ValidateRule before(String value);
+    ValidateRule after(@NonNull String value);
 
-    ValidateRule after(String value);
+    ValidateRule between(@NonNull int min, @NonNull int max);
 
-    ValidateRule between(int min, int max);
+    ValidateRule decimal(@NonNull int min, @NonNull int max);
 
-    ValidateRule decimal(int min, int max);
+    <T> ValidateRule isEnum(@NonNull Class<T> enumClass);
 
-    <T> ValidateRule isEnum(Class<T> enumClass);
-
-    Map<String, String[]> rules();
+    Map<String, Set<String>> rules();
 }
