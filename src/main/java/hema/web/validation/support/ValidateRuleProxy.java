@@ -29,9 +29,7 @@ final class ValidateRuleProxy implements InvocationHandler {
             "distinct", "date", "identityNumber", "bankCardNumber", "array"
     };
 
-    private final String[] dateRules = {
-
-    };
+    private final String[] authRules = {"email", "phone", "identityNumber", "bankCardNumber"};
 
     private final static String[] singleParameterRules = {
             "regex",
