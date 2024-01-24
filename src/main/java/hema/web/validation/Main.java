@@ -1,7 +1,9 @@
 package hema.web.validation;
 
+
 import hema.web.validation.contracts.ValidateRule;
-import hema.web.validation.support.ValidateRuleProxyConfiguration;
+import hema.web.validation.proxy.ValidateRuleProxyConfiguration;
+
 
 //@SpringBootApplication
 public class Main {
@@ -16,10 +18,11 @@ public class Main {
                 .exists("users","name")
                 .unique("users","name");
 
-        validateRule.rules().forEach((k,v) -> {
-            System.out.println(k);
-            System.out.println(v);
-        });
+//        validateRule.rules().forEach((k,v) -> {
+//            System.out.println(k);
+//            System.out.println(v);
+//        });
+
 
     }
 }

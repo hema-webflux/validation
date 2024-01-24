@@ -7,6 +7,7 @@ import java.util.Set;
 
 public interface ValidateRule {
 
+
     ValidateRule field(@NonNull String value);
 
     ValidateRule required();
@@ -24,6 +25,16 @@ public interface ValidateRule {
     ValidateRule string();
 
     ValidateRule url();
+
+    ValidateRule integer();
+
+    ValidateRule numeric();
+
+    ValidateRule json();
+
+    ValidateRule map();
+
+    ValidateRule array();
 
     ValidateRule size(@NonNull int value);
 
@@ -43,9 +54,7 @@ public interface ValidateRule {
 
     ValidateRule regex(@NonNull String pattern);
 
-    ValidateRule integer();
-
-    ValidateRule numeric();
+    ValidateRule notRegex(@NonNull String pattern);
 
     ValidateRule email();
 
@@ -61,13 +70,7 @@ public interface ValidateRule {
 
     ValidateRule confirmed(@NonNull String field);
 
-    ValidateRule json();
-
-    ValidateRule map();
-
     ValidateRule inMap();
-
-    ValidateRule array();
 
     ValidateRule inArray();
 
