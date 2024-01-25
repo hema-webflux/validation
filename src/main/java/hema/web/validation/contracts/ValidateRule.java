@@ -7,7 +7,6 @@ import java.util.Set;
 
 public interface ValidateRule {
 
-
     ValidateRule field(@NonNull String value);
 
     ValidateRule required();
@@ -120,5 +119,5 @@ public interface ValidateRule {
 
     <T> ValidateRule isEnum(@NonNull Class<T> enumClass);
 
-    Map<String, Set<String>> rules();
+    Map<String, Set<Object[]>> rules();
 }
