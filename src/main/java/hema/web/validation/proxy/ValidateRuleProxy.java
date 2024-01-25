@@ -41,14 +41,14 @@ final public class ValidateRuleProxy implements InvocationHandler {
             return new Object[]{method.getName()};
         }
 
-        int count = args.length;
+        int parameterLength = args.length;
 
-        Object[] rules = new Object[count + 1];
+        Object[] rules = new Object[parameterLength + 1];
 
         rules[0] = method.getName();
 
         for (int i = 1; i <= rules.length; i++) {
-            if (count >= i) {
+            if (parameterLength >= i) {
                 rules[i] = args[i - 1];
             }
         }
