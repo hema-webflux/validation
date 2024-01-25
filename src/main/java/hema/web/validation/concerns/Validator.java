@@ -1,4 +1,4 @@
-package hema.web.validation;
+package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.message.MessageBag;
 import hema.web.validation.exception.ValidationException;
@@ -8,7 +8,7 @@ import static hema.web.validation.contracts.ValidatesWhenResolved.*;
 
 import java.util.Map;
 
-final class Validator implements hema.web.validation.contracts.Validator {
+final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes {
 
     private final Map<String, Object> data;
 
@@ -58,7 +58,6 @@ final class Validator implements hema.web.validation.contracts.Validator {
     }
 
     public boolean passes() {
-
         messageBag = new ValidateMessageBag(null,this);
 
         return messageBag.isEmpty();

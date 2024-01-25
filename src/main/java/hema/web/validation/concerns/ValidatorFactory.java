@@ -1,4 +1,4 @@
-package hema.web.validation;
+package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.*;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +23,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public Validator make(Map<String, Object> data, ValidateRule validateRule, Message message, Attribute attribute) {
+    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, Message message, Attribute attribute) {
 
 
 

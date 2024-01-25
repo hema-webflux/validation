@@ -1,4 +1,4 @@
-package hema.web.validation;
+package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.Factory;
 import org.springframework.context.ApplicationContext;

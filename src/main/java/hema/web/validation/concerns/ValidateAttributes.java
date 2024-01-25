@@ -1,10 +1,10 @@
-package hema.web.validation.contracts;
+package hema.web.validation.concerns;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
-public interface ValidateAttributes {
+interface ValidateAttributes {
 
     default <T> boolean validateAccepted(String attribute, T value) {
 
