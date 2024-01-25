@@ -20,6 +20,27 @@ interface ValidateAttributes {
         return validateRequired(attribute, value) && acceptable.contains(value);
     }
 
+    default boolean validateLowercase(String attribute, String value) {
+        return value.toLowerCase().equals(value);
+    }
+
+    default boolean validateUppercase(String attribute, String value) {
+        return value.toUpperCase().equals(value);
+    }
+
+    default <T> boolean validateBool(String attribute, T value) {
+        return value instanceof Boolean;
+    }
+
+    default <T> boolean validateInteger(String attribute, T value) {
+
+        if (!validateNumeric(value)) {
+            return false;
+        }
+
+        return value instanceof Integer || value instanceof Long;
+    }
+
     default <T> boolean validateUrl(String attribute, T value) {
 
         if (!validateString(attribute, value)) {
