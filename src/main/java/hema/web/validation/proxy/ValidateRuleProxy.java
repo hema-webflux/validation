@@ -1,12 +1,13 @@
 package hema.web.validation.proxy;
 
 import hema.web.validation.contracts.ValidateRule;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
 
-final public class ValidateRuleProxy implements InvocationHandler {
+final class ValidateRuleProxy implements InvocationHandler {
 
     private final Map<String, Set<ValidateRule.Access>> rules = new HashMap<>();
 
@@ -46,14 +47,14 @@ final public class ValidateRuleProxy implements InvocationHandler {
     private Object[] prepareRules(Object[] args, Method method) {
 
         if (args == null) {
-            return new Object[]{method.getName()};
+            return new Object[]{StringUtils.capitalize(method.getName())};
         }
 
         int parameterLength = args.length;
 
         Object[] rules = new Object[parameterLength + 1];
 
-        rules[0] = method.getName();
+        rules[0] = StringUtils.capitalize(method.getName());
 
         for (int i = 1; i <= rules.length; i++) {
             if (parameterLength >= i) {

@@ -45,6 +45,8 @@ public interface ValidateRule {
 
     ValidateRule acceptedIf(@NonNull String value);
 
+    ValidateRule declined();
+
     ValidateRule unique(@NonNull String table, @NonNull String column);
 
     ValidateRule exists(@NonNull String table, @NonNull String column);
@@ -117,7 +119,7 @@ public interface ValidateRule {
 
     ValidateRule decimal(@NonNull int min, @NonNull int max);
 
-    <T> ValidateRule isEnum(@NonNull Class<T> enumClass);
+    <T> ValidateRule tryEnum(@NonNull Class<T> enumClass);
 
     Map<String, Set<Access>> rules();
 
