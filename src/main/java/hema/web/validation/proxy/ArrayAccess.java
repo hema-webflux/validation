@@ -2,7 +2,7 @@ package hema.web.validation.proxy;
 
 import hema.web.validation.contracts.ValidateRule;
 
-final class ArrayAccess implements Cloneable, ValidateRule.Access {
+class ArrayAccess implements Cloneable, ValidateRule.Access {
 
     private Object[] data = null;
 
