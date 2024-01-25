@@ -27,11 +27,11 @@ final public class ValidateRuleProxy implements InvocationHandler {
         return proxy;
     }
 
-    public boolean isGetValuesAction(Method method) {
+    private boolean isGetValuesAction(Method method) {
         return method.getName().equals("rules");
     }
 
-    public boolean isSetAttributeAction(Method method) {
+    private boolean isSetAttributeAction(Method method) {
         return method.getName().equals("field");
     }
 
