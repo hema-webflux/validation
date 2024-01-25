@@ -121,7 +121,7 @@ public interface ValidateRule {
 
     Map<String, Set<Access>> rules();
 
-    interface Access extends Cloneable {
+    interface Access {
 
         Access setData(Object[] data);
 
