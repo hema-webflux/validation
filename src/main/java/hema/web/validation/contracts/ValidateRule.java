@@ -119,5 +119,14 @@ public interface ValidateRule {
 
     <T> ValidateRule isEnum(@NonNull Class<T> enumClass);
 
-    Map<String, Set<Object[]>> rules();
+    Map<String, Set<Access>> rules();
+
+    interface Access extends Cloneable {
+
+        Access setData(Object[] data);
+
+        String first();
+
+        Access clone();
+    }
 }

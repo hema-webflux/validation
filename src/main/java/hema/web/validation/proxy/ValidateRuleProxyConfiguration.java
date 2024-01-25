@@ -18,7 +18,13 @@ public class ValidateRuleProxyConfiguration {
         return (ValidateRule) Proxy.newProxyInstance(
                 ValidateRule.class.getClassLoader(),
                 new Class[]{ValidateRule.class},
-                new ValidateRuleProxy()
+                new ValidateRuleProxy(access())
         );
+    }
+
+    @Bean
+    @Lazy
+    public ValidateRule.Access access() {
+        return new ArrayAccess();
     }
 }

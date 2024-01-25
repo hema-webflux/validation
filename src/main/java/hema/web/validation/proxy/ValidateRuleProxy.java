@@ -1,14 +1,22 @@
 package hema.web.validation.proxy;
 
+import hema.web.validation.contracts.ValidateRule;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
 
 final public class ValidateRuleProxy implements InvocationHandler {
 
-    private final Map<String, Set<Object[]>> rules = new HashMap<>();
+    private final Map<String, Set<ValidateRule.Access>> rules = new HashMap<>();
 
     private String currentField = null;
+
+    private final ValidateRule.Access access;
+
+    ValidateRuleProxy(ValidateRule.Access access) {
+        this.access = access;
+    }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
@@ -58,12 +66,14 @@ final public class ValidateRuleProxy implements InvocationHandler {
 
     private Store makeStore() {
         if (rules.containsKey(currentField)) {
-            return rule -> rules.get(currentField).add(rule);
+            return rule -> rules.get(currentField).add(access.clone().setData(rule));
         }
 
         return rule -> {
-            Set<Object[]> newRules = new HashSet<>();
-            newRules.add(rule);
+            Set<ValidateRule.Access> newRules = new HashSet<>();
+
+            newRules.add(access.clone().setData(rule));
+
             rules.put(currentField, newRules);
         };
     }
