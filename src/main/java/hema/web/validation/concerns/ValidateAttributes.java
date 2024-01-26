@@ -9,23 +9,23 @@ import java.util.regex.Pattern;
 
 interface ValidateAttributes {
 
-    default <T> boolean validateAccepted(String attribute, T value) {
+    default <T> boolean validateAccepted(T value) {
 
         Set<Object> acceptable = Set.of("yes", "on", "1", 1, true, "true");
 
-        return validateRequired(attribute, value) && acceptable.contains(value);
+        return validateRequired(value) && acceptable.contains(value);
     }
 
-    default <T> boolean validateDeclined(String attribute, T value) {
+    default <T> boolean validateDeclined(T value) {
 
         Set<Object> acceptable = Set.of("no", "off", "0", 0, false, "false");
 
-        return validateRequired(attribute, value) && acceptable.contains(value);
+        return validateRequired(value) && acceptable.contains(value);
     }
 
     default <T> boolean validateStartWith(String attribute, T value, ValidateRule.Access access) {
 
-        if (!validateString(attribute, value)) {
+        if (!validateString(value)) {
             return false;
         }
 
@@ -34,29 +34,29 @@ interface ValidateAttributes {
 
     default <T> boolean validateEndWith(String attribute, T value, ValidateRule.Access access) {
 
-        if (!validateString(attribute, value)) {
+        if (!validateString(value)) {
             return false;
         }
 
         return String.valueOf(value).endsWith(access.first(String.class));
     }
 
-    default boolean validateLowercase(String attribute, String value) {
+    default boolean validateLowercase(String value) {
         return value.toLowerCase().equals(value);
     }
 
-    default boolean validateUppercase(String attribute, String value) {
+    default boolean validateUppercase(String value) {
         return value.toUpperCase().equals(value);
     }
 
-    default <T> boolean validateBool(String attribute, T value) {
+    default <T> boolean validateBool(T value) {
 
         Set<Object> acceptable = Set.of(true, false, "true", "false", 1, 0, "1", "0");
 
-        return validateRequired(attribute, value) && acceptable.contains(value);
+        return validateRequired(value) && acceptable.contains(value);
     }
 
-    default <T> boolean validateInteger(String attribute, T value) {
+    default <T> boolean validateInteger(T value) {
 
         if (!validateNumeric(value)) {
             return isNegativeInteger((String) value) || isDoubleInteger((String) value);
@@ -77,7 +77,7 @@ interface ValidateAttributes {
         return Pattern.compile(regex).matcher(value).matches();
     }
 
-    default <T> boolean validateNumeric(String attribute, T value) {
+    default <T> boolean validateNumeric(T value) {
 
         boolean isValid = true;
 
@@ -92,9 +92,9 @@ interface ValidateAttributes {
         return isValid;
     }
 
-    default <T> boolean validateUrl(String attribute, T value) {
+    default <T> boolean validateUrl(T value) {
 
-        if (!validateString(attribute, value)) {
+        if (!validateString(value)) {
             return false;
         }
 
@@ -105,16 +105,15 @@ interface ValidateAttributes {
         }
     }
 
-    default <T> boolean validateString(String attribute, T value) {
-
-        if (!(value instanceof String)) {
+    default <T> boolean validateString(T value) {
+        if (value == null) {
             return false;
         }
 
-        return !((String) value).isEmpty() || !((String) value).isBlank();
+        return value instanceof String && value.toString().matches("^[a-zA-z]+$");
     }
 
-    default <T> boolean validateRequired(String attribute, T value) {
+    default <T> boolean validateRequired(T value) {
 
         if (value == null) {
             return false;
@@ -131,11 +130,18 @@ interface ValidateAttributes {
         return !(value instanceof Set<?>) || !((Set<?>) value).isEmpty();
     }
 
-    default <T> boolean validateNumeric(T value) {
-        return value instanceof Number;
+    default <T> boolean validateTryEnum(T value, Class<T> type) {
+        return type.isInstance(value);
     }
 
-    default <T> boolean validateTryEnum(String attribute, T value, Class<T> type) {
-        return type.isInstance(value);
+    default boolean validatePhone(String value) {
+
+        if (value.length() != 11) {
+            return false;
+        }
+
+        String regex = "(134[0-8]\\d{7})|(((13([0-3]|[5-9]))|149|15([0-3]|[5-9])|166|17(3|[5-8])|18[0-9]|19[8-9])\\d{8})";
+
+        return Pattern.compile(regex).matcher(value).matches();
     }
 }
