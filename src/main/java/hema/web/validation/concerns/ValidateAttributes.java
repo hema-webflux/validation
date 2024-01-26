@@ -1,8 +1,11 @@
 package hema.web.validation.concerns;
 
+import hema.web.validation.contracts.ValidateRule;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 interface ValidateAttributes {
 
@@ -20,6 +23,24 @@ interface ValidateAttributes {
         return validateRequired(attribute, value) && acceptable.contains(value);
     }
 
+    default <T> boolean validateStartWith(String attribute, T value, ValidateRule.Access access) {
+
+        if (!validateString(attribute, value)) {
+            return false;
+        }
+
+        return String.valueOf(value).startsWith(access.first(String.class));
+    }
+
+    default <T> boolean validateEndWith(String attribute, T value, ValidateRule.Access access) {
+
+        if (!validateString(attribute, value)) {
+            return false;
+        }
+
+        return String.valueOf(value).endsWith(access.first(String.class));
+    }
+
     default boolean validateLowercase(String attribute, String value) {
         return value.toLowerCase().equals(value);
     }
@@ -29,16 +50,46 @@ interface ValidateAttributes {
     }
 
     default <T> boolean validateBool(String attribute, T value) {
-        return value instanceof Boolean;
+
+        Set<Object> acceptable = Set.of(true, false, "true", "false", 1, 0, "1", "0");
+
+        return validateRequired(attribute, value) && acceptable.contains(value);
     }
 
     default <T> boolean validateInteger(String attribute, T value) {
 
         if (!validateNumeric(value)) {
-            return false;
+            return isNegativeInteger((String) value) || isDoubleInteger((String) value);
         }
 
-        return value instanceof Integer || value instanceof Long;
+        return true;
+    }
+
+    private boolean isNegativeInteger(String value) {
+        String regex = "^[-+]?[1-9]\\d*|0$";
+
+        return Pattern.compile(regex).matcher(value).matches();
+    }
+
+    private boolean isDoubleInteger(String value) {
+        String regex = "^[1-9]\\d*(\\.\\d+)?|^0(\\.\\d+)?";
+
+        return Pattern.compile(regex).matcher(value).matches();
+    }
+
+    default <T> boolean validateNumeric(String attribute, T value) {
+
+        boolean isValid = true;
+
+        String input = (String) value;
+
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isDigit(input.charAt(i))) {
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
     default <T> boolean validateUrl(String attribute, T value) {

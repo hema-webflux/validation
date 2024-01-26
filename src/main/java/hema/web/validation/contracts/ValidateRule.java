@@ -39,6 +39,8 @@ public interface ValidateRule {
 
     ValidateRule uppercase();
 
+    ValidateRule lowercase();
+
     ValidateRule nullable();
 
     ValidateRule accepted();
@@ -61,9 +63,9 @@ public interface ValidateRule {
 
     ValidateRule phone();
 
-    ValidateRule identityNumber();
+    ValidateRule idCard();
 
-    ValidateRule bankCardNumber();
+    ValidateRule bankCard();
 
     ValidateRule min(@NonNull int value);
 
@@ -88,8 +90,6 @@ public interface ValidateRule {
     ValidateRule doesntStartWith(String... values);
 
     ValidateRule doesntEndWith(String... values);
-
-    ValidateRule lowercase();
 
     ValidateRule mimes(String... values);
 
@@ -127,7 +127,11 @@ public interface ValidateRule {
 
         Access setData(Object[] data);
 
-        String first();
+        <T> T first(Class<T> kind);
+
+        String rule();
+
+        Object[] parameters();
 
         Access clone();
     }

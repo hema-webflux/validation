@@ -22,7 +22,17 @@ class ArrayAccess implements Cloneable, ValidateRule.Access {
     }
 
     @Override
-    public String first() {
+    public <T> T first(Class<T> kind) {
+        return data.length == 1 ? null : kind.cast(data[1]);
+    }
+
+    @Override
+    public String rule() {
         return (String) data[0];
+    }
+
+    @Override
+    public Object[] parameters() {
+        return null;
     }
 }

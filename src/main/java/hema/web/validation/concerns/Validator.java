@@ -20,6 +20,33 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private MessageBag messageBag = null;
 
+    private final String[] implicitRules = {
+            "Accepted",
+            "Required",
+            "String",
+            "Url",
+            "Integer",
+            "Numeric",
+            "Json",
+            "Map",
+            "Array",
+            "Uppercase",
+            "Lowercase",
+            "Email",
+            "Phone",
+            "Date",
+            "Bool",
+            "IdCard",
+            "BankCard"
+    };
+
+    private final String[] dependentRules= {
+            "Same",
+            "Confirmed",
+            "After",
+            "Before"
+    };
+
     Validator(Map<String, Object> data, Map<String, String[]> rules, Message message, Attribute attribute) {
         this.data = data;
         this.initialRules = rules;
@@ -58,7 +85,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     }
 
     public boolean passes() {
-        messageBag = new ValidateMessageBag(null,this);
+        messageBag = new ValidateMessageBag(null, this);
 
         return messageBag.isEmpty();
     }
