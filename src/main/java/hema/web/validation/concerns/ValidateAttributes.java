@@ -2,6 +2,7 @@ package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.ValidateRule;
 
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,29 @@ interface ValidateAttributes {
         Set<Object> acceptable = Set.of("no", "off", "0", 0, false, "false");
 
         return validateRequired(value) && acceptable.contains(value);
+    }
+
+    default <T> boolean validateSize(T value, ValidateRule.Access access) {
+
+        Integer size = access.first(Integer.class);
+
+        if (validateString(value)) {
+            return String.valueOf(value).length() == size;
+        }
+
+        if (validateNumeric(value) && validateInteger(value)) {
+            return value == size;
+        }
+
+        if (validateArray(value)) {
+            return Array.getLength(value) == size;
+        }
+
+        return false;
+    }
+
+    default <T> boolean validateArray(T value) {
+        return value.getClass().isArray();
     }
 
     default <T> boolean validateStartWith(String attribute, T value, ValidateRule.Access access) {

@@ -1,5 +1,6 @@
 package hema.web.validation.concerns;
 
+import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.message.MessageBag;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.support.ValidateMessageBag;
@@ -17,6 +18,8 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     private final Attribute customAttribute;
 
     private final Map<String, String[]> initialRules;
+
+    private String currentRule = null;
 
     private MessageBag messageBag = null;
 
@@ -40,7 +43,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "BankCard"
     };
 
-    private final String[] dependentRules= {
+    private final String[] dependentRules = {
             "Same",
             "Confirmed",
             "After",
@@ -52,6 +55,33 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         this.initialRules = rules;
         this.customMessage = message;
         this.customAttribute = attribute;
+    }
+
+    private void validateAttribute(String attribute, ValidateRule.Access access) {
+
+        if (access.rule().isEmpty()) {
+            return;
+        }
+
+        currentRule = access.rule();
+
+        Object value = data.get(attribute);
+
+        boolean validatable = isValidatable(access.rule(), attribute, value);
+
+    }
+
+    private boolean isValidatable(String rule, String attribute, Object value) {
+
+        return false;
+    }
+
+    /**
+     * @param rule String
+     * @return boolean
+     */
+    private boolean dependsOnOtherFields(String rule) {
+        return true;
     }
 
     @Override
