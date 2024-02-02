@@ -4,58 +4,54 @@ plugins {
     signing
 }
 
-val file = providers.gradleProperty("configure.file").get()
-apply(from = "${System.getProperty("user.home")}/.gradle/${file}")
+apply(from = findProperty("SIGNING_CONFIGURE"))
 
-group = providers.gradleProperty("package.group").get()
-version = providers.gradleProperty("package.version").get()
+group = findProperty("PACKAGE_GROUP") as String
+version = findProperty("PACKAGE_VERSION") as String
 
 repositories {
     mavenCentral()
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-
     withJavadocJar()
     withSourcesJar()
 }
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("mavenJava") {
+
             groupId = "${project.group}"
             artifactId = project.name
             version = "${project.version}"
 
             from(components["java"])
-        }
-        create<MavenPublication>("mavenJava") {
+
             pom {
                 name = project.name
-                description = providers.gradleProperty("pom.description").get()
-                url = providers.gradleProperty("pom.scm.url").get()
+                description = property("POM_DESCRIPTION") as String
+                url = findProperty("POM_SCM_URL") as String
 
                 licenses {
                     license {
-                        name = providers.gradleProperty("pom.license.name").get()
-                        url = providers.gradleProperty("pom.license.url").get()
+                        name = findProperty("POM_LICENSE_NAME") as String
+                        url = findProperty("POM_LICENSE_URL") as String
                     }
                 }
 
                 developers {
                     developer {
-                        id = providers.gradleProperty("pom.developer.id").get()
-                        name = providers.gradleProperty("pom.developer.name").get()
-                        email = providers.gradleProperty("pom.developer.email").get()
+                        id = findProperty("POM_DEVELOPER_ID") as String
+                        name = findProperty("POM_DEVELOPER_NAME") as String
+                        email = findProperty("POM_DEVELOPER_EMAIL") as String
                     }
                 }
 
                 scm {
-                    connection = providers.gradleProperty("pom.scm.connection").get()
-                    developerConnection = providers.gradleProperty("pom.scm.developerConnection").get()
-                    url = providers.gradleProperty("pom.scm.url").get()
+                    connection = findProperty("POM_SCM_CONNECTION") as String
+                    developerConnection = findProperty("POM_SCM_DEVELOPER_CONNECTION") as String
+                    url = findProperty("POM_SCM_URL") as String
                 }
 
             }
@@ -65,8 +61,11 @@ publishing {
     repositories {
         maven {
 
-            val repoProperties: String = if (version.toString().endsWith("SNAPSHOT")) "snapshot" else "release"
-            url = uri(providers.gradleProperty("package.${repoProperties}.repo").get())
+            val isSnapshot = version.toString().endsWith("SNAPSHOT")
+
+            val repositories: String = if (isSnapshot) "SNAPSHOT" else "RELEASE"
+
+            url = uri(findProperty("NEXUS_${repositories}_URL") as String)
 
             credentials {
                 username = project.ext.get("sonaUsername").toString()
@@ -76,35 +75,6 @@ publishing {
     }
 }
 
-dependencies {
-    implementation("org.json:json:20231013")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.2.1")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-}
-
 signing {
-
-    val keyId: String = project.ext.get("signing.keyId").toString()
-    val password: String = project.ext.get("signing.password").toString()
-    val secretKey: String = project.ext.get("signing.secretKeyRingFile").toString()
-
-    useInMemoryPgpKeys(keyId, secretKey, password)
-
     sign(publishing.publications["mavenJava"])
-}
-
-task("hello") {
-    println(project.ext.get("sonaUsername"))
-}
-
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
