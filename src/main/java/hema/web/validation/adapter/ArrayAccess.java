@@ -1,4 +1,4 @@
-package hema.web.validation.proxy;
+package hema.web.validation.adapter;
 
 import hema.web.validation.contracts.ValidateRule;
 
