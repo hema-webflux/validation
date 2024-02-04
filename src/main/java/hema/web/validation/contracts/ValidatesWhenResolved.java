@@ -11,7 +11,7 @@ public interface ValidatesWhenResolved {
     }
 
     default void failedValidation(Validator validator) throws ValidationException {
-        throw new ValidationException(validator);
+        throw new ValidationException(validator,422,"Validation error.");
     }
 
     void validateResolved() throws ValidationException;
