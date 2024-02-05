@@ -87,3 +87,7 @@ dependencies {
 signing {
     sign(publishing.publications["mavenJava"])
 }
+
+tasks.javadoc {
+    options.encoding = "UTF-8"
+}
