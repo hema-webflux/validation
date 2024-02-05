@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
@@ -180,24 +181,19 @@ interface ValidateAttributes {
         }
     }
 
-    default <T> boolean validateSize(T value, ValidateRule.Access access) {
+    /**
+     * Validate the size of an attribute.
+     * @param value T
+     * @param access Access
+     * @return Boolean
+     * @param <T> Generic type.
+     * @throws HttpException exception
+     */
+    default <T> boolean validateSize(T value, ValidateRule.Access access) throws HttpException {
 
-        Integer size = access.first(Integer.class);
+        requireParameterCount(1, access.parameters(), "size");
 
-        if (validateArray(value)) {
-            return Array.getLength(value) == size;
-        }
-
-        if (validateString(value)) {
-            return String.valueOf(value).length() == size;
-        }
-
-        String input = String.valueOf(value);
-        if (validateNumeric(input) && validateInteger(input)) {
-            return Integer.valueOf(input).equals(size);
-        }
-
-        return false;
+        return BigInteger.valueOf((long) value).equals(access.first(BigInteger.class));
     }
 
     /**
