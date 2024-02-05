@@ -76,6 +76,14 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         return false;
     }
 
+    private <T> String tryConvertToString(T value) {
+        try {
+            return String.valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * @param rule String
      * @return boolean

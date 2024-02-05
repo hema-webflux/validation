@@ -6,7 +6,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -34,10 +36,6 @@ interface ValidateAttributes {
 
     default <T> boolean validateIn(T value, ValidateRule.Access access) {
 
-        if (value == null) {
-            return false;
-        }
-
         if (access.parameters().length == 0) {
             return false;
         }
@@ -45,61 +43,66 @@ interface ValidateAttributes {
         return Set.of(access.parameters()).contains(value);
     }
 
-    default <T> boolean validateEmail(T value) {
-
-        if (!validateString(value)) {
-            return false;
-        }
-
-        String regex = "^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$";
-
-        return Pattern.compile(regex).matcher((String) value).matches();
+    /**
+     * Validate that an value is a legality email.
+     *
+     * @param value String
+     * @return Boolean.
+     */
+    default <T> boolean validateEmail(String value) {
+        return Pattern
+                .compile("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$")
+                .matcher(value)
+                .matches();
     }
 
-    default <T> boolean validatePhone(T value) {
+    /**
+     * Validate that an value is a legality phone.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validatePhone(String value) {
 
-        if (!validateString(value)) {
+        if (value.length() != 11) {
             return false;
         }
 
-        if (value.toString().length() != 11) {
-            return false;
-        }
-
-        String  regex   = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\\\d{8}$";
-        Pattern pattern = Pattern.compile(regex);
-
-        return pattern.matcher((String) value).matches();
+        return Pattern
+                .compile("^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\\\d{8}$")
+                .matcher(value)
+                .matches();
     }
 
-    default <T> boolean validateIdCard(T value) {
-
-        if (!validateString(value)) {
-            return false;
-        }
-
-        return Pattern.compile("(^\\d{15}$)|(^\\d{17}([0-9]|X)$)").matcher((String) value).matches();
+    /**
+     * Validate that an value is a legality id card number.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateIdCard(String value) {
+        return Pattern.compile("(^\\d{15}$)|(^\\d{17}([0-9]|X)$)").matcher(value).matches();
     }
 
-    default <T> boolean validateBankCard(T value) {
+    /**
+     * Validate that an value is a legality bank card number.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateBankCard(String value) {
 
-        if (!validateString(value)) {
+        if (value.length() < 15 || value.length() > 19) {
             return false;
         }
 
-        String card = (String) value;
-
-        if (card.length() < 15 || card.length() > 19) {
-            return false;
-        }
-
-        char bit = getBankCardCheckCode(card);
+        char bit = getBankCardCheckCode(value);
 
         if (bit == 'N') {
             return false;
         }
 
-        return card.charAt(card.length() - 1) == bit;
+        return value.charAt(value.length() - 1) == bit;
     }
 
     private char getBankCardCheckCode(String bankCard) {
@@ -119,16 +122,22 @@ interface ValidateAttributes {
         return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0');
     }
 
-    default <T> boolean validateJson(T value) {
-        if (!validateString(value)) {
-            return false;
-        }
-
-        String source = (String) value;
-
-        return isJsonStruct(source) && isConvertibleJson(source);
+    /**
+     * Validate that an value is a JSON.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateJson(String value) {
+        return (value.startsWith("{") && value.endsWith("}")) && isConvertibleJson(value);
     }
 
+    /**
+     * Check strings can be formatted by JSON.
+     *
+     * @param value String
+     * @return Boolean
+     */
     private boolean isConvertibleJson(String value) {
         try {
             new JSONObject(value);
@@ -139,59 +148,99 @@ interface ValidateAttributes {
         }
     }
 
-    private boolean isJsonStruct(String value) {
-        return value.startsWith("{") && value.endsWith("}");
-    }
+//    default <T> boolean validateSize(T value, ValidateRule.Access access) {
+//
+//        Integer size = access.first(Integer.class);
+//
+//        if (validateString(value)) {
+//            return String.valueOf(value).length() == size;
+//        }
+//
+//        if (validateNumeric(value) && validateInteger(value)) {
+//            return value == size;
+//        }
+//
+//        if (validateArray(value)) {
+//            return Array.getLength(value) == size;
+//        }
+//
+//        return false;
+//    }
 
-    default <T> boolean validateSize(T value, ValidateRule.Access access) {
+    /**
+     * Validate that an map has all of the given keys.
+     *
+     * @param value  T
+     * @param access Access
+     * @param <T>    Generic type.
+     * @return Boolean
+     */
+    default <T> boolean validateRequiredMapKeys(T value, ValidateRule.Access access) {
 
-        Integer size = access.first(Integer.class);
-
-        if (validateString(value)) {
-            return String.valueOf(value).length() == size;
-        }
-
-        if (validateNumeric(value) && validateInteger(value)) {
-            return value == size;
-        }
-
-        if (validateArray(value)) {
-            return Array.getLength(value) == size;
-        }
-
-        return false;
-    }
-
-    default <T> boolean validateArray(T value) {
-        return value.getClass().isArray();
-    }
-
-    default <T> boolean validateStartWith(String attribute, T value, ValidateRule.Access access) {
-
-        if (!validateString(value)) {
+        if (!validateMap(value)) {
             return false;
         }
 
+        Map<?, ?> maps = ((Map<?, ?>) value);
+
+        for (Object param : access.parameters()) {
+            if (!maps.containsKey(param)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate that the value starts with the specified string.
+     *
+     * @param value  String
+     * @param access Access
+     * @return Boolean
+     */
+    default boolean validateStartWith(String value, ValidateRule.Access access) {
         return String.valueOf(value).startsWith(access.first(String.class));
     }
 
-    default <T> boolean validateEndWith(String attribute, T value, ValidateRule.Access access) {
-
-        if (!validateString(value)) {
-            return false;
-        }
-
+    /**
+     * Validate that the value ends with the specified string.
+     *
+     * @param value  String
+     * @param access Access
+     * @return Boolean
+     */
+    default boolean validateEndWith(String value, ValidateRule.Access access) {
         return String.valueOf(value).endsWith(access.first(String.class));
     }
 
+    /**
+     * Validate that an value is a valid lowercase.
+     *
+     * @param value String
+     * @return Boolean
+     */
     default boolean validateLowercase(String value) {
         return value.toLowerCase().equals(value);
     }
 
+    /**
+     * Validate that an value is a valid uppercase.
+     *
+     * @param value String
+     * @return Boolean
+     */
     default boolean validateUppercase(String value) {
         return value.toUpperCase().equals(value);
     }
 
+    /**
+     * Validate that an value is a valid Boolean.
+     *
+     * @param value T
+     * @param <T>   Generic type.
+     * @return Boolean
+     */
     default <T> boolean validateBool(T value) {
 
         Set<Object> acceptable = Set.of(true, false, "true", "false", 1, 0, "1", "0");
@@ -199,35 +248,53 @@ interface ValidateAttributes {
         return validateRequired(value) && acceptable.contains(value);
     }
 
-    default <T> boolean validateInteger(T value) {
+    /**
+     * Validate that an value is a valid Integer.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateInteger(String value) {
 
         if (!validateNumeric(value)) {
-            return isNegativeInteger((String) value) || isDoubleInteger((String) value);
+            return false;
         }
 
-        return true;
+        return isNegativeInteger(value) && !isDoubleInteger(value);
     }
 
+    /**
+     * Check that an value is a valid positive or negative integer.
+     *
+     * @param value String
+     * @return Boolean
+     */
     private boolean isNegativeInteger(String value) {
-        String regex = "^[-+]?[1-9]\\d*|0$";
-
-        return Pattern.compile(regex).matcher(value).matches();
+        return Pattern.compile("^[-+]?[1-9]\\d*|0$").matcher(value).matches();
     }
 
+    /**
+     * Check that an value is a valid float.
+     *
+     * @param value String
+     * @return Boolean
+     */
     private boolean isDoubleInteger(String value) {
-        String regex = "^[1-9]\\d*(\\.\\d+)?|^0(\\.\\d+)?";
-
-        return Pattern.compile(regex).matcher(value).matches();
+        return Pattern.compile("^[1-9]\\d*(\\.\\d+)?|^0(\\.\\d+)?").matcher(value).matches();
     }
 
-    default <T> boolean validateNumeric(T value) {
+    /**
+     * Validate that an value is a valid Numeric.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateNumeric(String value) {
 
         boolean isValid = true;
 
-        String input = (String) value;
-
-        for (int i = 0; i < input.length(); i++) {
-            if (!Character.isDigit(input.charAt(i))) {
+        for (int i = 0; i < value.length(); i++) {
+            if (!Character.isDigit(value.charAt(i))) {
                 isValid = false;
             }
         }
@@ -235,42 +302,83 @@ interface ValidateAttributes {
         return isValid;
     }
 
-    default <T> boolean validateUrl(T value) {
-
-        if (!validateString(value)) {
-            return false;
-        }
-
+    /**
+     * Validate that an value is a valid URL.
+     *
+     * @param value String
+     * @return Boolean
+     */
+    default boolean validateUrl(String value) {
         try {
-            return !URI.create((String) value).toURL().toString().isEmpty();
+            return !URI.create(value).toURL().toString().isEmpty();
         } catch (Exception e) {
             return false;
         }
     }
 
+    /**
+     * Validate that an value is a valid String.
+     *
+     * @param value T
+     * @param <T>   Generic type
+     * @return Boolean
+     */
     default <T> boolean validateString(T value) {
-        if (value == null) {
-            return false;
-        }
-
-        return value instanceof String && value.toString().matches("^[a-zA-z]+$");
+        return value instanceof String;
     }
 
+    /**
+     * Validate that an value is a empty.
+     *
+     * @param value T
+     * @param <T>   Generic type
+     * @return Boolean
+     */
     default <T> boolean validateRequired(T value) {
 
-        if (value == null) {
+        if (Objects.isNull(value)) {
             return false;
         }
 
-        if (value instanceof String && ((String) value).trim().isEmpty()) {
+        if (value instanceof String && (value.toString().trim().isEmpty())) {
             return false;
         }
 
-        if (value instanceof Map<?, ?> && ((Map<?, ?>) value).isEmpty()) {
+        if (validateArray(value) && Array.getLength(value) == 0) {
             return false;
         }
 
-        return !(value instanceof Set<?>) || !((Set<?>) value).isEmpty();
+        if (validateMap(value) && ((Map<?, ?>) value).isEmpty()) {
+            return false;
+        }
+
+        if (value instanceof Collection<?> && ((Collection<?>) value).isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate that an value is a valid Map.
+     *
+     * @param value T
+     * @param <T>   Generic Type
+     * @return Boolean
+     */
+    default <T> boolean validateMap(T value) {
+        return value instanceof Map<?, ?>;
+    }
+
+    /**
+     * Validate that an value is a valid Array.
+     *
+     * @param value T
+     * @param <T>   Generic type.
+     * @return Boolean
+     */
+    default <T> boolean validateArray(T value) {
+        return value.getClass().isArray();
     }
 
     default <T> boolean validateTryEnum(T value, Class<T> type) {
