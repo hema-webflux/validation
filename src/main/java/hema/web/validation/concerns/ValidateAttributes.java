@@ -1,5 +1,6 @@
 package hema.web.validation.concerns;
 
+import hema.web.contracts.http.HttpException;
 import hema.web.validation.contracts.ValidateRule;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,10 +29,41 @@ interface ValidateAttributes {
         return validateRequired(value) && acceptable.contains(value);
     }
 
-    default <T> boolean validateMin(T value) {
+    default <T> boolean validateMin(T value, ValidateRule.Access access) {
+        return getSize(value) >= access.first(Integer.class);
+    }
 
+    default <T> boolean validateMax(T value, ValidateRule.Access access) {
+        return getSize(value) <= access.first(Integer.class);
+    }
 
-        return true;
+    private void requireParameterCount(int count, Object[] parameters, String rule) throws HttpException {
+        if (parameters.length < count) {
+            throw new InvalidArgumentException(500, String.format("Validation rule %s requires at least %s parameters", rule, count));
+        }
+    }
+
+    class InvalidArgumentException extends HttpException {
+        public InvalidArgumentException(int code, String message) {
+            super(code, message);
+        }
+    }
+
+    private <T> int getSize(T value) {
+
+        if (validateArray(value)) {
+            return Array.getLength(value);
+        }
+
+        if (validateMap(value)) {
+            return ((Map<?, ?>) value).size();
+        }
+
+        if (validateString(value) && validateNumeric((String) value)) {
+            return (int) value;
+        }
+
+        return String.valueOf(value).trim().length();
     }
 
     default <T> boolean validateIn(T value, ValidateRule.Access access) {
@@ -148,24 +180,25 @@ interface ValidateAttributes {
         }
     }
 
-//    default <T> boolean validateSize(T value, ValidateRule.Access access) {
-//
-//        Integer size = access.first(Integer.class);
-//
-//        if (validateString(value)) {
-//            return String.valueOf(value).length() == size;
-//        }
-//
-//        if (validateNumeric(value) && validateInteger(value)) {
-//            return value == size;
-//        }
-//
-//        if (validateArray(value)) {
-//            return Array.getLength(value) == size;
-//        }
-//
-//        return false;
-//    }
+    default <T> boolean validateSize(T value, ValidateRule.Access access) {
+
+        Integer size = access.first(Integer.class);
+
+        if (validateArray(value)) {
+            return Array.getLength(value) == size;
+        }
+
+        if (validateString(value)) {
+            return String.valueOf(value).length() == size;
+        }
+
+        String input = String.valueOf(value);
+        if (validateNumeric(input) && validateInteger(input)) {
+            return Integer.valueOf(input).equals(size);
+        }
+
+        return false;
+    }
 
     /**
      * Validate that an map has all of the given keys.
@@ -193,7 +226,7 @@ interface ValidateAttributes {
     }
 
     /**
-     * Validate that the value starts with the specified string.
+     * Validate the attribute starts with a given substring.
      *
      * @param value  String
      * @param access Access
@@ -204,7 +237,7 @@ interface ValidateAttributes {
     }
 
     /**
-     * Validate that the value ends with the specified string.
+     * Validate the attribute ends with a given substring.
      *
      * @param value  String
      * @param access Access
