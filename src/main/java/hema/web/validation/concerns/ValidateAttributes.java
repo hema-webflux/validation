@@ -9,10 +9,10 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Pattern;
 
 interface ValidateAttributes {
@@ -54,6 +54,55 @@ interface ValidateAttributes {
 
     private Set<Object> declined() {
         return Set.of("no", "off", "0", 0, false, "false");
+    }
+
+    default <T> boolean before(T value) {
+
+        if (!validateDate(value)) {
+            return false;
+        }
+
+
+    }
+
+    default <T> boolean after(T value) {
+
+    }
+
+    default <T> boolean dateEquals(T value, ValidateRule.Access access) {
+
+        if (!validateDate(value)) {
+            return false;
+        }
+
+        return value.equals(access.first(String.class));
+    }
+
+    default <T> boolean validateDate(T value) {
+
+        if (!validateString(value)) {
+            return false;
+        }
+
+        String date = String.valueOf(value);
+
+        return isLegalDate(date.length(), date, "yyyy-MM-dd HH:mm:ss");
+    }
+
+    private boolean isLegalDate(int length, String date, String format) {
+
+        if ((date == null) || (date.length() != length)) {
+            return false;
+        }
+
+        DateFormat formatter = new SimpleDateFormat(format);
+
+        try {
+            Date dateValue = formatter.parse(date);
+            return date.equals(formatter.format(dateValue));
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
     default <T> boolean validateRequiredUnless(T value, ValidateRule.Access access) throws HttpException {

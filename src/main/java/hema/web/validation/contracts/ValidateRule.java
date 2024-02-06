@@ -14,11 +14,11 @@ public interface ValidateRule {
 
     ValidateRule requiredUnless(String... values);
 
-    ValidateRule requiredWith(String... field);
+    ValidateRule requiredWith(@NonNull String field);
 
     ValidateRule requiredWithAll(String... fields);
 
-    ValidateRule requiredWithout(String field);
+    ValidateRule requiredWithout(@NonNull String field);
 
     ValidateRule requiredWithoutAll(String... fields);
 
