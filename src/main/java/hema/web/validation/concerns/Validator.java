@@ -59,15 +59,15 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private void validateAttribute(String attribute, ValidateRule.Access access) {
 
-        if (access.rule().isEmpty()) {
+        if (access.other().isEmpty()) {
             return;
         }
 
-        currentRule = access.rule();
+        currentRule = access.other();
 
         Object value = data.get(attribute);
 
-        boolean validatable = isValidatable(access.rule(), attribute, value);
+        boolean validatable = isValidatable(access.other(), attribute, value);
 
     }
 
@@ -126,5 +126,11 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         messageBag = new ValidateMessageBag(null, this);
 
         return messageBag.isEmpty();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(String attribute) {
+        return (T) data.get(attribute);
     }
 }

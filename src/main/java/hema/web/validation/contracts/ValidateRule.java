@@ -2,6 +2,7 @@ package hema.web.validation.contracts;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,11 +14,13 @@ public interface ValidateRule {
 
     ValidateRule requiredUnless(String... values);
 
-    ValidateRule requiredWith(String... values);
+    ValidateRule requiredWith(String... field);
 
-    ValidateRule requiredWithAll(String... values);
+    ValidateRule requiredWithAll(String... fields);
 
-    ValidateRule requiredWithout(String... values);
+    ValidateRule requiredWithout(String field);
+
+    ValidateRule requiredWithoutAll(String... fields);
 
     ValidateRule requiredMapKeys(String... values);
 
@@ -129,10 +132,39 @@ public interface ValidateRule {
 
         <T> T first(Class<T> kind);
 
-        String rule();
+        String other();
 
         Object[] parameters();
 
         Access clone();
+
+        default Object[] convertValuesToBoolean(Object[] values) {
+            return Arrays.stream(values)
+                    .map(value -> {
+
+                        if (isString(value)) {
+                            return switch ((String) value) {
+                                case "true" -> true;
+                                case "false" -> false;
+                                default -> value;
+                            };
+                        }
+
+                        return value;
+                    }).toArray();
+        }
+
+        default Object[] convertValuesToNull(Object[] values) {
+            return Arrays.stream(values)
+                    .map(value -> (isString(value) && value.toString().equalsIgnoreCase("null"))
+                            ? null
+                            : value
+                    )
+                    .toArray();
+        }
+
+        private <T> boolean isString(T value) {
+            return value instanceof String;
+        }
     }
 }

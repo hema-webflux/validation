@@ -2,6 +2,8 @@ package hema.web.validation.adapter;
 
 import hema.web.validation.contracts.ValidateRule;
 
+import java.util.Arrays;
+
 class ArrayAccess implements Cloneable, ValidateRule.Access {
 
     private Object[] data = null;
@@ -27,12 +29,13 @@ class ArrayAccess implements Cloneable, ValidateRule.Access {
     }
 
     @Override
-    public String rule() {
-        return (String) data[0];
+    public String other() {
+        return String.valueOf(data[0]);
     }
 
     @Override
     public Object[] parameters() {
-        return null;
+        return Arrays.copyOfRange(data, 0, data.length - 1);
     }
+
 }

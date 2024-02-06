@@ -2,6 +2,7 @@ package hema.web.validation.concerns;
 
 import hema.web.contracts.http.HttpException;
 import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.exception.InvalidArgumentException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,38 +17,163 @@ import java.util.regex.Pattern;
 
 interface ValidateAttributes {
 
+    /**
+     * Validate that an value was "accepted"
+     * This validation rule implies the value is "required".
+     *
+     * @param value T
+     * @param <T>   Generic type.
+     * @return Boolean
+     */
     default <T> boolean validateAccepted(T value) {
-
-        Set<Object> acceptable = Set.of("yes", "on", "1", 1, true, "true");
-
-        return validateRequired(value) && acceptable.contains(value);
+        return validateRequired(value) && acceptable().contains(value);
     }
 
+    default <T> boolean validateRequiredIf(T value, ValidateRule.Access access) throws HttpException {
+
+        InvalidArgumentException.requireParameterCount(2, access.parameters(), "acceptedIf");
+
+        return true;
+    }
+
+    /**
+     * Validate that an value was "declined".
+     * This validation rule implies the value is "required".
+     *
+     * @param value T
+     * @param <T>   Generic type.
+     * @return Boolean.
+     */
     default <T> boolean validateDeclined(T value) {
-
-        Set<Object> acceptable = Set.of("no", "off", "0", 0, false, "false");
-
-        return validateRequired(value) && acceptable.contains(value);
+        return validateRequired(value) && declined().contains(value);
     }
 
-    default <T> boolean validateMin(T value, ValidateRule.Access access) {
+    private Set<Object> acceptable() {
+        return Set.of("yes", "on", "1", 1, true, "true");
+    }
+
+    private Set<Object> declined() {
+        return Set.of("no", "off", "0", 0, false, "false");
+    }
+
+    default <T> boolean validateRequiredUnless(T value, ValidateRule.Access access) throws HttpException {
+
+        InvalidArgumentException.requireParameterCount(2, access.parameters(), "requiredUnless");
+
+        return true;
+    }
+
+
+    default <T> boolean validateRequiredWith(T value, ValidateRule.Access access) {
+
+        if (!allFailingRequired(access.parameters())) {
+            return validateRequired(value);
+        }
+
+        return true;
+    }
+
+
+    default <T> boolean validateRequiredWithAll(T value, ValidateRule.Access access) {
+
+        if (!anyFailingRequired(access.parameters())) {
+            return validateRequired(value);
+        }
+
+        return true;
+    }
+
+    default <T> boolean validateRequiredWithOut(T value, ValidateRule.Access access) {
+
+        if (anyFailingRequired(access.parameters())) {
+            return validateRequired(value);
+        }
+
+        return true;
+    }
+
+    default <T> boolean validateRequiredWithOutAll(T value, ValidateRule.Access access) {
+
+        if (allFailingRequired(access.parameters())) {
+            return validateRequired(value);
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if any of the given attributes fail the required test.
+     *
+     * @param attributes Object[]
+     * @return Boolean
+     */
+    private boolean anyFailingRequired(Object[] attributes) {
+
+        for (Object attribute : attributes) {
+            if (attribute instanceof String && validateRequired(getValue((String) attribute))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if all of the given attributes fail the required test.
+     *
+     * @param attributes Object[]
+     * @return Boolean
+     */
+    private boolean allFailingRequired(Object[] attributes) {
+
+        for (Object attribute : attributes) {
+            if (attribute instanceof String && validateRequired(getValue((String) attribute))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    <T> T getValue(String attribute);
+
+    /**
+     * Validate that an map has all of the given keys.
+     *
+     * @param value  T
+     * @param access Access
+     * @param <T>    Generic type.
+     * @return Boolean
+     */
+    default <T> boolean validateRequiredMapKeys(T value, ValidateRule.Access access) {
+
+        if (!validateMap(value)) {
+            return false;
+        }
+
+        Map<?, ?> maps = ((Map<?, ?>) value);
+
+        for (Object param : access.parameters()) {
+            if (!maps.containsKey(param)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    default <T> boolean validateMin(T value, ValidateRule.Access access) throws HttpException {
+
+        InvalidArgumentException.requireParameterCount(1, access.parameters(), "min");
+
         return getSize(value) >= access.first(Integer.class);
     }
 
-    default <T> boolean validateMax(T value, ValidateRule.Access access) {
+    default <T> boolean validateMax(T value, ValidateRule.Access access) throws HttpException {
+
+        InvalidArgumentException.requireParameterCount(1, access.parameters(), "max");
+
         return getSize(value) <= access.first(Integer.class);
-    }
-
-    private void requireParameterCount(int count, Object[] parameters, String rule) throws HttpException {
-        if (parameters.length < count) {
-            throw new InvalidArgumentException(500, String.format("Validation rule %s requires at least %s parameters", rule, count));
-        }
-    }
-
-    class InvalidArgumentException extends HttpException {
-        public InvalidArgumentException(int code, String message) {
-            super(code, message);
-        }
     }
 
     private <T> int getSize(T value) {
@@ -83,10 +209,7 @@ interface ValidateAttributes {
      * @return Boolean.
      */
     default <T> boolean validateEmail(String value) {
-        return Pattern
-                .compile("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$")
-                .matcher(value)
-                .matches();
+        return Pattern.compile("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$").matcher(value).matches();
     }
 
     /**
@@ -101,10 +224,7 @@ interface ValidateAttributes {
             return false;
         }
 
-        return Pattern
-                .compile("^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\\\d{8}$")
-                .matcher(value)
-                .matches();
+        return Pattern.compile("^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\\\d{8}$").matcher(value).matches();
     }
 
     /**
@@ -183,42 +303,18 @@ interface ValidateAttributes {
 
     /**
      * Validate the size of an attribute.
-     * @param value T
-     * @param access Access
-     * @return Boolean
-     * @param <T> Generic type.
-     * @throws HttpException exception
-     */
-    default <T> boolean validateSize(T value, ValidateRule.Access access) throws HttpException {
-
-        requireParameterCount(1, access.parameters(), "size");
-
-        return BigInteger.valueOf((long) value).equals(access.first(BigInteger.class));
-    }
-
-    /**
-     * Validate that an map has all of the given keys.
      *
      * @param value  T
      * @param access Access
      * @param <T>    Generic type.
      * @return Boolean
+     * @throws HttpException exception
      */
-    default <T> boolean validateRequiredMapKeys(T value, ValidateRule.Access access) {
+    default <T> boolean validateSize(T value, ValidateRule.Access access) throws HttpException {
 
-        if (!validateMap(value)) {
-            return false;
-        }
+        InvalidArgumentException.requireParameterCount(1, access.parameters(), "size");
 
-        Map<?, ?> maps = ((Map<?, ?>) value);
-
-        for (Object param : access.parameters()) {
-            if (!maps.containsKey(param)) {
-                return false;
-            }
-        }
-
-        return true;
+        return BigInteger.valueOf((long) value).equals(access.first(BigInteger.class));
     }
 
     /**
