@@ -1,21 +1,8 @@
 package hema.web.validation;
 
-
-import hema.web.validation.concerns.ValidatorConfiguration;
-import hema.web.validation.contracts.Validator;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ResolverStyle;
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 //@SpringBootApplication
 public class Main {
@@ -34,23 +21,51 @@ public class Main {
 
         String date = "2021-02-06 17:04:00";
 
-       Boolean b = isLegalDate(date.length(),date,"yyyy-MM-dd HH:mm:ss");
-        System.out.println(b);
+//        String regex = "^(?:(?!0000)[0-9]{4}\\-(?:(?:0[13578]|1[02])(?:\\-0[1-9]|\\-[12][0-9]|\\-3[01])|(?:0[469]|11)(?:\\-0[1-9]|\\-[12][0-9]|\\-30)|02(?:\\-0[1-9]|\\-1[0-9]|\\-2[0-8]))|(?:(((\\d{2})(0[48]|[2468][048]|[13579][26])|(([02468][048])|([13579][26]))00))\\-02\\-29))$";
+//
+//        System.out.println(Pattern.compile(regex).matcher(date).find());
+
+        System.out.println(parseDate(date));
     }
 
-    public static boolean isLegalDate(int length, String date, String format) {
+    public static Date parseDate(String inputDate) {
 
-        if ((date == null) || (date.length() != length)) {
-            return false;
+        String[] patterns = {
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-dd HH:mm",
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy/MM/dd HH:mm",
+                "yyyy-MM-dd",
+                "yyyy/MM/dd",
+                "yyyyMMdd"
+        };
+        SimpleDateFormat df = new SimpleDateFormat();
+        for (String pattern : patterns) {
+            df.applyPattern(pattern);
+            df.setLenient(false);
+            ParsePosition pos  = new ParsePosition(0);
+            Date          date = df.parse(inputDate, pos);
+            if (date != null) {
+                return date;
+            }
         }
+        return null;
+    }
 
-        DateFormat formatter = new SimpleDateFormat(format);
+    interface Validator {
+    }
 
-        try {
-            Date dateValue = formatter.parse(date);
-            return date.equals(formatter.format(dateValue));
-        } catch (ParseException e) {
-            return false;
+    @FunctionalInterface
+    interface Closure {
+        boolean callback(Validator validator);
+    }
+
+    final class Test implements Validator {
+
+        private Set<Boolean> afters;
+
+        public void after(Closure closure) {
+            afters.add(closure.callback(this));
         }
     }
 

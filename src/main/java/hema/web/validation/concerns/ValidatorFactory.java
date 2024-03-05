@@ -5,8 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import static hema.web.validation.contracts.ValidatesWhenResolved.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +21,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, Message message, Attribute attribute) {
-
+    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, Map<String, String> messages, Map<String, String> attributes) {
 
 
         return null;

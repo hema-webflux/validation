@@ -2,11 +2,9 @@ import hema.web.validation.FormValidator;
 import hema.web.validation.contracts.ValidateRule;
 import org.springframework.context.ApplicationContext;
 
-import static hema.web.validation.FormValidator.*;
-
 import java.util.Map;
 
-public class ValidatorTests extends FormValidator implements Message, Attribute {
+public class ValidatorTests extends FormValidator {
     public ValidatorTests(ApplicationContext container) {
         super(container);
     }
@@ -24,12 +22,12 @@ public class ValidatorTests extends FormValidator implements Message, Attribute 
     }
 
     @Override
-    public Map<String, String> attributes() {
+    protected Map<String, String> attributes() {
         return null;
     }
 
     @Override
-    public Map<String, String> messages() {
+    protected Map<String, String> messages() {
         return null;
     }
 }

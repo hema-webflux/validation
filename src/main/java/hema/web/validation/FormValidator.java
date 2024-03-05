@@ -4,6 +4,7 @@ import hema.web.validation.contracts.Factory;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.ValidatesWhenResolved;
 import hema.web.validation.contracts.Validator;
+import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 import org.springframework.context.ApplicationContext;
 
@@ -29,7 +30,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected abstract void rules(ValidateRule rule);
 
     @Override
-    public void validateResolved() throws ValidationException {
+    public void validateResolved() throws ValidationException, UnauthorizedException {
 
         prepareForValidation();
 
@@ -58,6 +59,14 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected void passedValidation() {
     }
 
+    protected Map<String, String> messages() {
+        return new HashMap<>();
+    }
+
+    protected Map<String, String> attributes() {
+        return new HashMap<>();
+    }
+
     final protected Validator getValidatorInstance() {
         if (validator != null) {
             return validator;
@@ -78,15 +87,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
         execRule(validateRule);
 
-        Message message = isSubClassOf(Message.class)
-                ? (Message) this
-                : new Message.AnonymousMessage();
-
-        Attribute attribute = isSubClassOf(Attribute.class)
-                ? (Attribute) this
-                : new Attribute.AnonymousAttribute();
-
-        return factory.make(validationData(), validateRule, message, attribute);
+        return factory.make(validationData(), validateRule, messages(), attributes());
     }
 
     private Map<String, Object> validationData() {

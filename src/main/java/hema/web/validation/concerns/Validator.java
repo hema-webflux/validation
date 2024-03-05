@@ -103,7 +103,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     }
 
     @Override
-    public <T> T getModel(Class<T> kind) {
+    public <T> T getModel(Class<? extends T> kind) {
         return null;
     }
 

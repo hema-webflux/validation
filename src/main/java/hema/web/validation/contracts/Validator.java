@@ -11,7 +11,7 @@ public interface Validator {
 
     Map<String, String[]> rules();
 
-    <T> T getModel(Class<T> kind);
+    <T> T getModel(Class<? extends T> kind);
 
     boolean fails();
 

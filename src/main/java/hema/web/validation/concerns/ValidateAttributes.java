@@ -9,9 +9,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -56,17 +53,17 @@ interface ValidateAttributes {
         return Set.of("no", "off", "0", 0, false, "false");
     }
 
-    default <T> boolean before(T value) {
+    default <T> boolean before(T value, ValidateRule.Access access) {
 
         if (!validateDate(value)) {
             return false;
         }
 
-
+        return DateValidator.isTimeBeforeSpecificTime((String) value, access.first(String.class));
     }
 
-    default <T> boolean after(T value) {
-
+    default <T> boolean after(T value, ValidateRule.Access access) {
+        return DateValidator.isTimeAfterSpecificTime((String) value, access.first(String.class));
     }
 
     default <T> boolean dateEquals(T value, ValidateRule.Access access) {
@@ -75,7 +72,7 @@ interface ValidateAttributes {
             return false;
         }
 
-        return value.equals(access.first(String.class));
+        return DateValidator.isEquals((String) value, access.first(String.class));
     }
 
     default <T> boolean validateDate(T value) {
@@ -84,25 +81,7 @@ interface ValidateAttributes {
             return false;
         }
 
-        String date = String.valueOf(value);
-
-        return isLegalDate(date.length(), date, "yyyy-MM-dd HH:mm:ss");
-    }
-
-    private boolean isLegalDate(int length, String date, String format) {
-
-        if ((date == null) || (date.length() != length)) {
-            return false;
-        }
-
-        DateFormat formatter = new SimpleDateFormat(format);
-
-        try {
-            Date dateValue = formatter.parse(date);
-            return date.equals(formatter.format(dateValue));
-        } catch (ParseException e) {
-            return false;
-        }
+        return DateValidator.isDateFormat(DateValidator.DEFAULT_FORMAT, String.valueOf(value));
     }
 
     default <T> boolean validateRequiredUnless(T value, ValidateRule.Access access) throws HttpException {
@@ -121,7 +100,6 @@ interface ValidateAttributes {
 
         return true;
     }
-
 
     default <T> boolean validateRequiredWithAll(T value, ValidateRule.Access access) {
 
