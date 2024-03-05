@@ -5,19 +5,18 @@ import hema.web.validation.contracts.message.MessageBag;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.support.ValidateMessageBag;
 
-import static hema.web.validation.contracts.ValidatesWhenResolved.*;
-
 import java.util.Map;
+import java.util.Set;
 
 final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes {
 
     private final Map<String, Object> data;
 
-    private final Message customMessage;
+    private final Map<String, String> messages;
 
-    private final Attribute customAttribute;
+    private final Map<String, String> attributes;
 
-    private final Map<String, String[]> initialRules;
+    private final Map<String, Set<ValidateRule.Access>> initialRules;
 
     private String currentRule = null;
 
@@ -50,11 +49,11 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "Before"
     };
 
-    Validator(Map<String, Object> data, Map<String, String[]> rules, Message message, Attribute attribute) {
+    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Map<String, String> messages, Map<String, String> attributes) {
         this.data = data;
         this.initialRules = rules;
-        this.customMessage = message;
-        this.customAttribute = attribute;
+        this.messages = messages;
+        this.attributes = attributes;
     }
 
     private void validateAttribute(String attribute, ValidateRule.Access access) {
