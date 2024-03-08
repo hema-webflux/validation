@@ -23,12 +23,17 @@ public class MessageBagTests {
     @Test
     public void testMessagesSize() {
         add();
-        assertEquals(messageBag.get("name"),2);
+        assertEquals(messageBag.get("name").size(),2);
     }
 
     @Test
     public void testFirst() {
         add();
         assertEquals(messageBag.first("name"),"Must be required.");
+    }
+
+    @Test
+    public void testMessage() {
+        assertNotEquals(messageBag,null);
     }
 }

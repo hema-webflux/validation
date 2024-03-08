@@ -23,7 +23,7 @@ interface ValidateAttributes {
      * @return Boolean
      */
     default <T> boolean validateAccepted(T value) {
-        return validateRequired(value) && acceptable().contains(value);
+        return validateRequired(value) && hasAcceptable(value);
     }
 
     default <T> boolean validateRequiredIf(T value, ValidateRule.Access access) throws HttpException {
@@ -31,6 +31,10 @@ interface ValidateAttributes {
         InvalidArgumentException.requireParameterCount(2, access.parameters(), "acceptedIf");
 
         return true;
+    }
+
+    private <T> boolean hasAcceptable(T value) {
+        return contains(value, new Object[]{"yes", "on", "1", 1, true, "true"});
     }
 
     /**
@@ -42,15 +46,22 @@ interface ValidateAttributes {
      * @return Boolean.
      */
     default <T> boolean validateDeclined(T value) {
-        return validateRequired(value) && declined().contains(value);
+        return validateRequired(value) && hasDeclined(value);
     }
 
-    private Set<Object> acceptable() {
-        return Set.of("yes", "on", "1", 1, true, "true");
+    private <T> boolean hasDeclined(T value) {
+        return contains(value, new Object[]{"no", "off", "0", 0, false, "false"});
     }
 
-    private Set<Object> declined() {
-        return Set.of("no", "off", "0", 0, false, "false");
+    private <T> boolean contains(T value, Object[] acceptable) {
+
+        for (Object accept : acceptable) {
+            if (value.equals(accept)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     default <T> boolean before(T value, ValidateRule.Access access) {

@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface ValidateRule {
 
-    ValidateRule field(@NonNull String value);
+    ValidateRule add(@NonNull String field);
 
     ValidateRule required();
 

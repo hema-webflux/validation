@@ -1,8 +1,8 @@
 package hema.web.validation.exception;
 
 import hema.web.contracts.http.HttpException;
+import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.contracts.Validator;
-import hema.web.validation.support.ValidateMessageBag;
 
 final public class ValidationException extends HttpException {
 
@@ -13,7 +13,7 @@ final public class ValidationException extends HttpException {
         this.validator = validator;
     }
 
-    public ValidateMessageBag errors() {
+    public MessageBag errors() {
         return validator.errors();
     }
 }
