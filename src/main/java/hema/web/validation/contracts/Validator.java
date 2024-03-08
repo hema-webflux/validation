@@ -1,7 +1,7 @@
 package hema.web.validation.contracts;
 
 import hema.web.validation.exception.ValidationException;
-import hema.web.validation.support.ValidateMessageBag;
+import hema.web.validation.message.ValidateMessageBag;
 
 import java.util.Map;
 

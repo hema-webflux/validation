@@ -1,9 +1,9 @@
 package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.ValidateRule;
-import hema.web.validation.contracts.message.MessageBag;
+import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;
-import hema.web.validation.support.ValidateMessageBag;
+import hema.web.validation.message.ValidateMessageBag;
 
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +17,6 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     private final Map<String, String> attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
-
-    private String currentRule = null;
 
     private MessageBag messageBag = null;
 
@@ -62,12 +60,23 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             return;
         }
 
-        currentRule = access.other();
+        if (dependsOnOtherFields(access.other())) {
+
+        }
 
         Object value = data.get(attribute);
 
         boolean validatable = isValidatable(access.other(), attribute, value);
 
+    }
+
+    private String[] replaceDotInParameters(String[] parameters) {
+
+        // 循环parameters
+        // 如果parameter包含\.，如： password\.
+        // 则将 \. 替换为 this.dotPlaceholder
+
+        return new String[]{};
     }
 
     private boolean isValidatable(String rule, String attribute, Object value) {
@@ -88,7 +97,14 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
      * @return boolean
      */
     private boolean dependsOnOtherFields(String rule) {
-        return true;
+
+        for (String value : dependentRules) {
+            if (rule.equals(value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -122,7 +138,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     }
 
     public boolean passes() {
-        messageBag = new ValidateMessageBag(null, this);
+        messageBag = new ValidateMessageBag();
 
         return messageBag.isEmpty();
     }

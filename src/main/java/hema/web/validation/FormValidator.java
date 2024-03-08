@@ -6,6 +6,7 @@ import hema.web.validation.contracts.ValidatesWhenResolved;
 import hema.web.validation.contracts.Validator;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
+import jakarta.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
@@ -15,17 +16,10 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
     private Validator validator = null;
 
-    private final ApplicationContext container;
-
-    public FormValidator(ApplicationContext container) {
-        this.container = container;
-    }
+    @Resource
+    private ApplicationContext container;
 
     protected abstract boolean authorize();
-
-    private void execRule(ValidateRule rule) {
-        rules(rule);
-    }
 
     protected abstract void rules(ValidateRule rule);
 
@@ -78,14 +72,14 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
         setValidator(validator);
 
-        return this.validator;
+        return validator;
     }
 
     final protected Validator createDefaultValidator(Factory factory) {
 
         ValidateRule validateRule = container.getBean(ValidateRule.class);
 
-        execRule(validateRule);
+        rules(validateRule);
 
         return factory.make(validationData(), validateRule, messages(), attributes());
     }
@@ -97,9 +91,4 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     private void setValidator(Validator validator) {
         this.validator = validator;
     }
-
-    private <T> boolean isSubClassOf(Class<T> type) {
-        return type.isInstance(this);
-    }
-
 }
