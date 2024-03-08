@@ -1,1 +1,2 @@
 hema.web.validation.concerns.ValidatorConfiguration
+hema.web.validation.adapter.ValidateRuleProxyConfiguration
