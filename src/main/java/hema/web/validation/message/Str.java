@@ -5,6 +5,12 @@ import java.util.regex.Pattern;
 
 public class Str {
 
+    /**
+     * Determine if a given string matches a given pattern.
+     * @param haystack String[]
+     * @param needle String
+     * @return boolean
+     */
     public static boolean is(String[] haystack, String needle) {
 
         for (String value : haystack) {
@@ -16,6 +22,12 @@ public class Str {
         return false;
     }
 
+    /**
+     * Determine if a given string matches a given pattern.
+     * @param haystack String
+     * @param needle String
+     * @return boolean
+     */
     public static boolean is(String haystack, String needle) {
 
         if (haystack.equals(needle)) {
