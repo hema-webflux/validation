@@ -1,23 +1,25 @@
 package hema.web.validation;
 
 import hema.web.validation.concerns.FormatsMessages;
+import hema.web.validation.message.Str;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         String value = "email*";
 
-        value = Pattern.quote(value).replace("\\Q", "").replace("\\E", "");
+        value = Str.regexQuote(value,"#");
 
-        value = value.replace("*", "([^.]*)");
+        value = value.replace("\\*", "([^.]*)");
 
-        System.out.println(Pattern.compile("^" + value + "\\z", Pattern.UNICODE_CASE).matcher("email_verify").matches());
+        System.out.println(Pattern.compile("^" + value + "\\z").matcher("email_verify").find());
 
         FormatsMessages formatsMessages = new Formats();
 
