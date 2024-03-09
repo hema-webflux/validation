@@ -53,7 +53,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected void passedValidation() {
     }
 
-    protected Map<String, String> messages() {
+    protected Map<String, Object> messages() {
         return new HashMap<>();
     }
 

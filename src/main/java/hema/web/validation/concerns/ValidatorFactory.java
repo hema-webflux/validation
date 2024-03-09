@@ -21,7 +21,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, Map<String, String> messages, Map<String, String> attributes) {
+    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, Map<String, Object> messages, Map<String, String> attributes) {
         return new Validator(data,validateRule.rules(),messages,attributes);
     }
 

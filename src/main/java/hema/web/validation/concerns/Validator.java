@@ -8,11 +8,11 @@ import hema.web.validation.message.ValidateMessageBag;
 import java.util.Map;
 import java.util.Set;
 
-final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes {
+final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
 
     private final Map<String, Object> data;
 
-    private final Map<String, String> messages;
+    private final Map<String, Object> messages;
 
     private final Map<String, String> attributes;
 
@@ -47,7 +47,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "Before"
     };
 
-    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Map<String, String> messages, Map<String, String> attributes) {
+    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Map<String, Object> messages, Map<String, String> attributes) {
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
@@ -147,5 +147,10 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     @SuppressWarnings("unchecked")
     public <T> T getValue(String attribute) {
         return (T) data.get(attribute);
+    }
+
+    @Override
+    public Map<String, Object> customMessage() {
+        return messages;
     }
 }
