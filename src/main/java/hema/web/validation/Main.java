@@ -1,72 +1,46 @@
 package hema.web.validation;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import hema.web.validation.concerns.FormatsMessages;
 
-//@SpringBootApplication
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 public class Main {
-    public static void main(String[] args) {
 
-//        ValidateRule validateRule = new ValidateRuleProxyConfiguration().validateRule();
-//
-//        validateRule.field("name").after("date").before("age").max(20).min(10).exists("users", "name").unique("users", "name");
-//
-//        validateRule.field("email").required().email().unique("accounts", "email").tryEnum(Toggle.class);
-//
-//        Map<String, Set<ValidateRule.Access>> rules = validateRule.rules();
-//
-//        rules.get("name").forEach(ele ->System.out.println(ele.first()));
-//        rules.get("email").forEach(ele ->System.out.println(ele.first()));
+    public static void main(String[] args) throws IOException {
 
-        String date = "2021-02-06 17:04:00";
+        String value = "email*";
 
-//        String regex = "^(?:(?!0000)[0-9]{4}\\-(?:(?:0[13578]|1[02])(?:\\-0[1-9]|\\-[12][0-9]|\\-3[01])|(?:0[469]|11)(?:\\-0[1-9]|\\-[12][0-9]|\\-30)|02(?:\\-0[1-9]|\\-1[0-9]|\\-2[0-8]))|(?:(((\\d{2})(0[48]|[2468][048]|[13579][26])|(([02468][048])|([13579][26]))00))\\-02\\-29))$";
-//
-//        System.out.println(Pattern.compile(regex).matcher(date).find());
+        value = Pattern.quote(value).replace("\\Q", "").replace("\\E", "");
 
-        System.out.println(parseDate(date));
+        value = value.replace("*", "([^.]*)");
+
+        System.out.println(Pattern.compile("^" + value + "\\z", Pattern.UNICODE_CASE).matcher("email_verify").matches());
+
+        FormatsMessages formatsMessages = new Formats();
+
+       String v = formatsMessages.getFromLocalArray("password_confirm","max",null);
+
+       System.out.println(v);
     }
 
-    public static Date parseDate(String inputDate) {
+    static class Formats implements FormatsMessages {
 
-        String[] patterns = {
-                "yyyy-MM-dd HH:mm:ss",
-                "yyyy-MM-dd HH:mm",
-                "yyyy/MM/dd HH:mm:ss",
-                "yyyy/MM/dd HH:mm",
-                "yyyy-MM-dd",
-                "yyyy/MM/dd",
-                "yyyyMMdd"
-        };
-        SimpleDateFormat df = new SimpleDateFormat();
-        for (String pattern : patterns) {
-            df.applyPattern(pattern);
-            df.setLenient(false);
-            ParsePosition pos  = new ParsePosition(0);
-            Date          date = df.parse(inputDate, pos);
-            if (date != null) {
-                return date;
-            }
-        }
-        return null;
-    }
+        @Override
+        public Map<String, Object> customMessage() {
+            Map<String, Object> messages = new HashMap<>();
 
-    interface Validator {
-    }
+            messages.put("name.required", ":attribute 不能为空");
 
-    @FunctionalInterface
-    interface Closure {
-        boolean callback(Validator validator);
-    }
+            Map<String, Object> passwordMessage = new HashMap<>();
+            passwordMessage.put("required", ":attribute 不能为空");
+            passwordMessage.put("max", "attribute 最大为 :max");
 
-    final class Test implements Validator {
+            messages.put("password*", passwordMessage);
 
-        private Set<Boolean> afters;
-
-        public void after(Closure closure) {
-            afters.add(closure.callback(this));
+            return messages;
         }
     }
-
 }
