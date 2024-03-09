@@ -7,8 +7,9 @@ public class Str {
 
     /**
      * Determine if a given string matches a given pattern.
+     *
      * @param haystack String[]
-     * @param needle String
+     * @param needle   String
      * @return boolean
      */
     public static boolean is(String[] haystack, String needle) {
@@ -24,8 +25,9 @@ public class Str {
 
     /**
      * Determine if a given string matches a given pattern.
+     *
      * @param haystack String
-     * @param needle String
+     * @param needle   String
      * @return boolean
      */
     public static boolean is(String haystack, String needle) {
@@ -34,17 +36,35 @@ public class Str {
             return true;
         }
 
-        haystack = Pattern.quote(haystack);
-        haystack = haystack.replace("\\Q", "")
-                .replace("\\E", "");
+        haystack = regexQuote(haystack, "#");
 
-        haystack = haystack.replace("*", ".*");
+        haystack = haystack.replace("\\*", ".*");
 
         Pattern pattern = Pattern.compile("^" + haystack + "\\z", Pattern.UNICODE_CASE);
 
         Matcher matcher = pattern.matcher(needle);
 
         return matcher.matches();
+    }
+
+    public static String regexQuote(String haystack, String delimiter) {
+
+        String regex = "[.\\\\+*?\\[\\]^$(){}=!<>|:-]";
+
+        if (delimiter != null && !delimiter.isEmpty()) {
+            regex += "|" + Pattern.quote(delimiter);
+        }
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(haystack);
+
+        StringBuilder buffer = new StringBuilder();
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, "\\\\" + matcher.group());
+        }
+        matcher.appendTail(buffer);
+
+        return buffer.toString();
     }
 
 }
