@@ -19,6 +19,12 @@ public class TranslationConfiguration {
 
     @Bean
     @Lazy
+    public hema.web.validation.contracts.translation.Translator translator() {
+        return new Translator(loader(), "en");
+    }
+
+    @Bean
+    @Lazy
     public Loader loader() {
         return new FileLoader(applicationContext.getBean(FileSystemResourceLoader.class), new String[]{
                 String.format("%s%s", ResourceLoader.CLASSPATH_URL_PREFIX, "lang")
