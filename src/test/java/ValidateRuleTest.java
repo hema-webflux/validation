@@ -3,7 +3,7 @@ import hema.web.validation.contracts.ValidateRule;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ValidateRuleTests {
+public class ValidateRuleTest {
 
     private final ValidateRule validateRule = new ValidateRuleProxyConfiguration().validateRule();
 

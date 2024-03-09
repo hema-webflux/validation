@@ -3,7 +3,7 @@ import hema.web.validation.contracts.ValidateRule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ValidatorTests extends FormValidator {
+public class ValidatorTest extends FormValidator {
 
     @Override
     protected void rules(ValidateRule rule) {
