@@ -6,7 +6,6 @@ import hema.web.validation.contracts.translation.Loader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,9 +23,8 @@ public class FileLoader implements Loader {
     }
 
     @Override
-    public void load(String locale, String namespace) {
-
-
+    public Map<String, Object> load(String locale) {
+        return loadJsonPaths(locale);
     }
 
     /**
@@ -38,9 +36,9 @@ public class FileLoader implements Loader {
     private Map<String, Object> loadJsonPaths(String locale) {
         return Arrays.stream(path).reduce(new HashMap<>(),
                 (output, path) -> (HashMap<String, Object>) handleLoadJsonPaths(path, locale, output),
-                (first, second) -> {
-                    first.putAll(second);
-                    return first;
+                (before, after) -> {
+                    before.putAll(after);
+                    return before;
                 });
     }
 

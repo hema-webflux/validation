@@ -1,9 +1,9 @@
 package hema.web.validation.contracts.translation;
 
-import java.io.IOException;
+import java.util.Map;
 
 public interface Loader {
 
-    void load(String locale, String namespace) throws IOException;
+    Map<String, Object> load(String locale);
 
 }
