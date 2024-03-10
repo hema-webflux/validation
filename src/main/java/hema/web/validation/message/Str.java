@@ -1,7 +1,9 @@
 package hema.web.validation.message;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Str {
 
@@ -63,6 +65,22 @@ public class Str {
             matcher.appendReplacement(buffer, "\\\\" + matcher.group());
         }
         matcher.appendTail(buffer);
+
+        return buffer.toString();
+    }
+
+    public static String random(int length) {
+
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        Random        random = new Random();
+
+        StringBuilder buffer = new StringBuilder();
+
+        for (int i =0;i<length;i++ ){
+            int number = random.nextInt(62);
+            buffer.append(chars.charAt(number));
+        }
 
         return buffer.toString();
     }

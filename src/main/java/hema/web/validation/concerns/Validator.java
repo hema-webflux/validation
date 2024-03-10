@@ -3,6 +3,7 @@ package hema.web.validation.concerns;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;
+import hema.web.validation.message.Str;
 import hema.web.validation.message.ValidateMessageBag;
 
 import java.util.Map;
@@ -17,6 +18,8 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     private final Map<String, String> attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
+
+    private final String dotPlaceholder;
 
     private MessageBag messageBag = null;
 
@@ -52,6 +55,8 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         this.initialRules = rules;
         this.messages = messages;
         this.attributes = attributes;
+
+        this.dotPlaceholder = Str.random(16);
     }
 
     private void validateAttribute(String attribute, ValidateRule.Access access) {
@@ -147,6 +152,12 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     @SuppressWarnings("unchecked")
     public <T> T getValue(String attribute) {
         return (T) data.get(attribute);
+    }
+
+    @Override
+    public String replacePlaceholderInString(String attribute) {
+        return attribute.replace(dotPlaceholder, ".")
+                .replace("__asterisk__", "*");
     }
 
     @Override

@@ -19,6 +19,8 @@ public interface FormatsMessages {
         String value = getFromLocalArray("name", "required", sources);
     }
 
+    String replacePlaceholderInString(String attribute);
+
     default String getFromLocalArray(String attribute, String lowerRule, @Nullable Map<String, ?> source) {
 
         source = source != null ? source : customMessage();
@@ -35,11 +37,10 @@ public interface FormatsMessages {
 
                 if (messageKey.contains("*")) {
 
-                    String pattern = Pattern.quote(messageKey);
-                    pattern = pattern.replace("\\Q", "").replace("\\E", "");
-                    pattern = pattern.replace("*", "([^.]*)");
+                    String pattern = Str.regexQuote(messageKey, "#");
+                    pattern = pattern.replace("\\*", "([^.]*)");
 
-                    Pattern patternMatch = Pattern.compile("^" + pattern + "\\z", Pattern.UNICODE_CASE);
+                    Pattern patternMatch = Pattern.compile("^" + pattern + "\\z");
 
                     if (patternMatch.matcher(key).matches()) {
 
