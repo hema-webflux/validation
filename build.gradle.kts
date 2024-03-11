@@ -79,7 +79,7 @@ dependencies {
     implementation("org.json:json:20231013")
     implementation("org.springframework.boot:spring-boot-starter-web:3.2.3")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("io.github.hema-webflux:contracts:1.1")
+    implementation("io.github.hema-webflux:contracts:1.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
