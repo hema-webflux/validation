@@ -1,9 +1,7 @@
 package hema.web.validation;
 
-import hema.web.validation.contracts.Factory;
-import hema.web.validation.contracts.ValidateRule;
-import hema.web.validation.contracts.ValidatesWhenResolved;
-import hema.web.validation.contracts.Validator;
+import hema.web.validation.concerns.schema.Blueprint;
+import hema.web.validation.contracts.*;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 import jakarta.annotation.Resource;
@@ -53,12 +51,12 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected void passedValidation() {
     }
 
-    protected Map<String, Object> messages() {
-        return new HashMap<>();
+    protected Blueprint messages(Blueprint store) {
+        return store.setNullable(true);
     }
 
-    protected Map<String, String> attributes() {
-        return new HashMap<>();
+    protected Blueprint attributes(Blueprint store) {
+        return store.setNullable(true);
     }
 
     final protected Validator getValidatorInstance() {
@@ -79,9 +77,9 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
         ValidateRule validateRule = container.getBean(ValidateRule.class);
 
-        rules(validateRule);
+        this.rules(validateRule);
 
-        return factory.make(validationData(), validateRule, messages(), attributes());
+        return factory.make(validationData(), validateRule, messages(new Blueprint()), attributes(new Blueprint()));
     }
 
     private Map<String, Object> validationData() {

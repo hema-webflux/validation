@@ -3,7 +3,6 @@ package hema.web.validation.message;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class Str {
 

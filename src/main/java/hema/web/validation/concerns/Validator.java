@@ -1,5 +1,6 @@
 package hema.web.validation.concerns;
 
+import hema.web.validation.concerns.schema.Blueprint;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;
@@ -13,9 +14,9 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Map<String, Object> data;
 
-    private final Map<String, Object> messages;
+    private final Blueprint messages;
 
-    private final Map<String, String> attributes;
+    private final Blueprint attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
 
@@ -50,7 +51,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "Before"
     };
 
-    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Map<String, Object> messages, Map<String, String> attributes) {
+    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Blueprint messages, Blueprint attributes) {
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
@@ -158,10 +159,5 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     public String replacePlaceholderInString(String attribute) {
         return attribute.replace(dotPlaceholder, ".")
                 .replace("__asterisk__", "*");
-    }
-
-    @Override
-    public Map<String, Object> customMessage() {
-        return messages;
     }
 }

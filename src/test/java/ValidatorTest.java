@@ -1,7 +1,6 @@
 import hema.web.validation.FormValidator;
+import hema.web.validation.concerns.schema.Blueprint;
 import hema.web.validation.contracts.ValidateRule;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ValidatorTest extends FormValidator {
 
@@ -14,12 +13,23 @@ public class ValidatorTest extends FormValidator {
 
     @Override
     protected boolean authorize() {
-        return false;
+        return true;
     }
 
-    @Test
-    public void test() {
-        Assertions.assertEquals("name", "name");
+    @Override
+    protected Blueprint attributes(Blueprint store) {
+        return store.add("name", "用户名")
+                .add("email", "邮箱")
+                .add("phone", "手机号");
     }
 
+    @Override
+    protected Blueprint messages(Blueprint store) {
+        return store.add("name.required", ":attribute 不能为空")
+                .add("email*", closure -> (
+                        closure.add("required", ":attribute 不能为空")
+                                .add("max",":attribute ")
+                ));
+
+    }
 }
