@@ -9,6 +9,14 @@ public interface FormatsMessages {
 
     String replacePlaceholderInString(String attribute);
 
+    /**
+     * Get the inline message for a rule if it exists.
+     *
+     * @param attribute String
+     * @param lowerRule String
+     * @param sources   SimpleSource
+     * @return String
+     */
     default String getFromLocalArray(String attribute, String lowerRule, SimpleSource sources) {
 
         String[] searches = {String.format("%s.%s", attribute, lowerRule), lowerRule, attribute};
@@ -45,6 +53,13 @@ public interface FormatsMessages {
         return "";
     }
 
+    /**
+     * Determine that the property binding value is the SourceClause instance and that the validation rule exists.
+     * @param attribute String
+     * @param rule String
+     * @param sources SimpleSource
+     * @return boolean
+     */
     private boolean isSourceClause(String attribute, String rule, SimpleSource sources) {
         return sources.isSourceClause(attribute) && sources.getSourceClause(attribute).hasRule(rule);
     }
