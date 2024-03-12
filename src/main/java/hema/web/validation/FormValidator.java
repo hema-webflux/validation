@@ -54,10 +54,22 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected void passedValidation() {
     }
 
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @param messageSource SimpleSource
+     * @return SimpleSource
+     */
     protected SimpleSource messages(SimpleSource messageSource) {
         return messageSource;
     }
 
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @param attributeSource Sourceable
+     * @return Sourceable
+     */
     protected Sourceable attributes(Sourceable attributeSource) {
         return attributeSource;
     }
@@ -82,7 +94,12 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
         this.rules(validateRule);
 
-        return factory.make(validationData(), validateRule, messages(new MessageSource()), attributes(new AttributeSource()));
+        return factory.make(
+                validationData(),
+                validateRule,
+                messages(new MessageSource()),
+                attributes(new AttributeSource())
+        );
     }
 
     private Map<String, Object> validationData() {

@@ -8,5 +8,7 @@ public interface SimpleSource extends Sourceable {
 
     SimpleSource add(String attribute, UnaryOperator<SourceClause> sourceClause);
 
+    SourceClause getSourceClause(String attribute);
+
     boolean isSourceClause(String attribute);
 }

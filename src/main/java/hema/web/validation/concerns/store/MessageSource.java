@@ -18,6 +18,11 @@ public class MessageSource extends AbstractSource implements SimpleSource {
     }
 
     @Override
+    public SourceClause getSourceClause(String attribute) {
+        return (SourceClause) source.get(attribute);
+    }
+
+    @Override
     public SimpleSource add(String attribute, UnaryOperator<SourceClause> sourceClause) {
         source.put(attribute, sourceClause.apply(new RuleMessageClause()));
         fallbacks.add(attribute);
@@ -36,6 +41,5 @@ public class MessageSource extends AbstractSource implements SimpleSource {
             source.put(rule, message);
             return this;
         }
-
     }
 }

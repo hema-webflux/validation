@@ -10,12 +10,17 @@ abstract class AbstractSource implements Sourceable {
     protected final Map<String, Object> source = new HashMap<>();
 
     @Override
+    public String getSource(String attribute) {
+        return (String) source.get(attribute);
+    }
+
+    @Override
     public boolean isEmpty() {
         return source.isEmpty();
     }
 
     @Override
-    public boolean hasKey(String value) {
+    public boolean hasAttribute(String value) {
         return source.containsKey(value);
     }
 }

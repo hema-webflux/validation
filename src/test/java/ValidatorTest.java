@@ -19,7 +19,8 @@ public class ValidatorTest extends FormValidator {
 
     @Override
     protected Sourceable attributes(Sourceable store) {
-        return store.add("name", "用户名")
+        return store
+                .add("name", "用户名")
                 .add("email", "邮箱")
                 .add("phone", "手机号");
     }
@@ -27,11 +28,12 @@ public class ValidatorTest extends FormValidator {
     @Override
     protected SimpleSource messages(SimpleSource store) {
         return store.add("name*", closure -> (
-                closure.add("required", "xxx")
-                        .add("string", "xxx")
-        )).add("email*", closure -> (
-                closure.add("email", "format")
-                        .add("max", "max")
-        ));
+                        closure.add("required", "xxx")
+                                .add("string", "xxx")
+                ))
+                .add("email*", closure -> (
+                        closure.add("email", "format")
+                                .add("max", "max")
+                ));
     }
 }
