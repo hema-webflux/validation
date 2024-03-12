@@ -55,13 +55,20 @@ public interface FormatsMessages {
 
     /**
      * Determine that the property binding value is the SourceClause instance and that the validation rule exists.
+     *
      * @param attribute String
-     * @param rule String
-     * @param sources SimpleSource
+     * @param rule      String
+     * @param sources   SimpleSource
      * @return boolean
      */
     private boolean isSourceClause(String attribute, String rule, SimpleSource sources) {
         return sources.isSourceClause(attribute) && sources.getSourceClause(attribute).hasRule(rule);
+    }
+
+    default String replaceAttributePlaceholder(String message, String value) {
+        return message.replace(":attribute", value)
+                .replace(":ATTRIBUTE", value.toUpperCase())
+                .replace(":Attribute", Str.ucFirst(value));
     }
 
 }

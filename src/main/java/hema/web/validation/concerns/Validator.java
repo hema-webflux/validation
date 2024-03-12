@@ -161,4 +161,17 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         return attribute.replace(dotPlaceholder, ".")
                 .replace("__asterisk__", "*");
     }
+
+    public void addFailure(String attribute,String rule) {
+
+        if (messageBag == null) {
+            passes();
+        }
+
+        String attributeWithPlaceholders = attribute;
+
+        attribute = replacePlaceholderInString(attribute);
+
+
+    }
 }
