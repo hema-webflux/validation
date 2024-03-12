@@ -34,12 +34,22 @@ public class MessageSource extends AbstractSource implements SimpleSource {
         return fallbacks.contains(attribute);
     }
 
+    @Override
+    public String[] attributes() {
+        return source.keySet().toArray(new String[0]);
+    }
+
     private static class RuleMessageClause extends AbstractSource implements SourceClause {
 
         @Override
         public SourceClause add(String rule, String message) {
             source.put(rule, message);
             return this;
+        }
+
+        @Override
+        public boolean hasRule(String rule) {
+            return source.containsKey(rule);
         }
     }
 }

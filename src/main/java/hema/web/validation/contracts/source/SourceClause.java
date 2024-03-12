@@ -4,6 +4,8 @@ public interface SourceClause extends Sourceable {
 
     SourceClause add(String rule, String message);
 
+    boolean hasRule(String rule);
+
     @Override
-    String getSource(String attribute);
+    String getSource(String rule);
 }

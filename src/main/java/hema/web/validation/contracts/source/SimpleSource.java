@@ -11,4 +11,6 @@ public interface SimpleSource extends Sourceable {
     SourceClause getSourceClause(String attribute);
 
     boolean isSourceClause(String attribute);
+
+    String[] attributes();
 }
