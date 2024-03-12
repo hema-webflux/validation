@@ -29,6 +29,8 @@ public class FormatsMessageTest {
         Assertions.assertEquals(formatsMessages.getFromLocalArray("email_verify","email",simpleSource),"Must be in email format.");
 
         Assertions.assertTrue(formatsMessages.getFromLocalArray("email_confirm","max",simpleSource).contains("max length"));
+
+        Assertions.assertTrue(formatsMessages.getFromLocalArray("avatar","url",simpleSource).isEmpty());
     }
 
     static class Format implements FormatsMessages {
