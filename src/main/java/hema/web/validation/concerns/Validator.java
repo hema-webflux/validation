@@ -1,8 +1,9 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.concerns.schema.Blueprint;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
+import hema.web.validation.contracts.source.SimpleSource;
+import hema.web.validation.contracts.source.Sourceable;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
 import hema.web.validation.message.ValidateMessageBag;
@@ -14,9 +15,9 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Map<String, Object> data;
 
-    private final Blueprint messages;
+    private final SimpleSource messages;
 
-    private final Blueprint attributes;
+    private final Sourceable attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
 
@@ -51,7 +52,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "Before"
     };
 
-    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, Blueprint messages, Blueprint attributes) {
+    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, SimpleSource messages, Sourceable attributes) {
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;

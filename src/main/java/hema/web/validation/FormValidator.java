@@ -1,7 +1,10 @@
 package hema.web.validation;
 
-import hema.web.validation.concerns.schema.Blueprint;
+import hema.web.validation.concerns.store.AttributeSource;
+import hema.web.validation.concerns.store.MessageSource;
 import hema.web.validation.contracts.*;
+import hema.web.validation.contracts.source.SimpleSource;
+import hema.web.validation.contracts.source.Sourceable;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 import jakarta.annotation.Resource;
@@ -51,12 +54,12 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     protected void passedValidation() {
     }
 
-    protected Blueprint messages(Blueprint store) {
-        return store.setNullable(true);
+    protected SimpleSource messages(SimpleSource messageSource) {
+        return messageSource;
     }
 
-    protected Blueprint attributes(Blueprint store) {
-        return store.setNullable(true);
+    protected Sourceable attributes(Sourceable attributeSource) {
+        return attributeSource;
     }
 
     final protected Validator getValidatorInstance() {
@@ -79,7 +82,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
 
         this.rules(validateRule);
 
-        return factory.make(validationData(), validateRule, messages(new Blueprint()), attributes(new Blueprint()));
+        return factory.make(validationData(), validateRule, messages(new MessageSource()), attributes(new AttributeSource()));
     }
 
     private Map<String, Object> validationData() {

@@ -1,6 +1,7 @@
 import hema.web.validation.FormValidator;
-import hema.web.validation.concerns.schema.Blueprint;
 import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.contracts.source.SimpleSource;
+import hema.web.validation.contracts.source.Sourceable;
 
 public class ValidatorTest extends FormValidator {
 
@@ -17,19 +18,20 @@ public class ValidatorTest extends FormValidator {
     }
 
     @Override
-    protected Blueprint attributes(Blueprint store) {
+    protected Sourceable attributes(Sourceable store) {
         return store.add("name", "用户名")
                 .add("email", "邮箱")
                 .add("phone", "手机号");
     }
 
     @Override
-    protected Blueprint messages(Blueprint store) {
-        return store.add("name.required", ":attribute 不能为空")
-                .add("email*", closure -> (
-                        closure.add("required", ":attribute 不能为空")
-                                .add("max",":attribute ")
-                ));
-
+    protected SimpleSource messages(SimpleSource store) {
+        return store.add("name*", closure -> (
+                closure.add("required", "xxx")
+                        .add("string", "xxx")
+        )).add("email*", closure -> (
+                closure.add("email", "format")
+                        .add("max", "max")
+        ));
     }
 }

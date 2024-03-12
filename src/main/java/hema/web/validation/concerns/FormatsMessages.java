@@ -11,17 +11,13 @@ public interface FormatsMessages {
 
     String replacePlaceholderInString(String attribute);
 
-    default String getFromLocalArray(String attribute, String lowerRule, Blueprint blueprint) {
+    default String getFromLocalArray(String attribute, String lowerRule, Blueprint sources) {
 
         String[] searches = {String.format("%s.%s", attribute, lowerRule), lowerRule, attribute};
 
-        Set<String> originalMessageKeys = blueprint.keySet();
-
-        String[] messageKeys = originalMessageKeys.toArray(new String[originalMessageKeys.size()]);
-
         for (String search : searches) {
 
-            for (String messageKey : messageKeys) {
+            for (String messageKey : sources.getAttributeKeysToArray()) {
 
                 if (messageKey.contains("*")) {
 
@@ -32,25 +28,25 @@ public interface FormatsMessages {
                     Pattern patternMatch = Pattern.compile("^" + pattern + "\\z");
 
                     if (patternMatch.matcher(search).matches()) {
-                        return blueprint.isCallback(messageKey, lowerRule)
-                                ? blueprint.get(messageKey, Blueprint.class).get(lowerRule, String.class)
-                                : blueprint.get(messageKey, String.class);
+                        return sources.isCallback(messageKey, lowerRule)
+                                ? sources.get(messageKey, Blueprint.class).get(lowerRule, String.class)
+                                : sources.get(messageKey, String.class);
                     }
 
                     continue;
                 }
 
                 if (Str.is(messageKey, search)) {
-                    return blueprint.isCallback(messageKey, lowerRule)
-                            ? blueprint.get(messageKey, Blueprint.class).get(lowerRule, String.class)
-                            : blueprint.get(messageKey, String.class);
+                    return messageKey.equals(attribute) && sources.isCallback(messageKey, lowerRule)
+                            ? sources.get(messageKey, Blueprint.class).get(lowerRule, String.class)
+                            : sources.get(messageKey, String.class);
                 }
 
             }
 
         }
 
-        return null;
+        return "";
     }
 
 }
