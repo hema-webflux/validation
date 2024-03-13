@@ -1,30 +1,31 @@
 package hema.web.validation.concerns;
 
+import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.*;
-import hema.web.validation.contracts.source.SimpleSource;
-import hema.web.validation.contracts.source.Sourceable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import java.util.HashMap;
 import java.util.Map;
 
-final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
+final class ValidatorFactory implements Factory<MessageHaystack, AttributeHaystack>, ApplicationListener<ContextRefreshedEvent> {
 
-    private final Map<String, String> fallbackMessages = new HashMap<>();
+    private final Map<String, String> fallbackMessages;
 
-    private final Map<String, ValidateClosure> extensions = new HashMap<>();
+    private final Map<String, ValidateClosure> extensions;
 
     private ApplicationContext applicationContext;
 
-    public ValidatorFactory(ApplicationContext applicationContext) {
+    public ValidatorFactory(ApplicationContext applicationContext, Map<String, String> fallbackMessages, Map<String, ValidateClosure> extensions) {
         this.applicationContext = applicationContext;
+        this.fallbackMessages = fallbackMessages;
+        this.extensions = extensions;
     }
 
     @Override
-    public hema.web.validation.concerns.Validator make(Map<String, Object> data, ValidateRule validateRule, SimpleSource messages, Sourceable attributes) {
-        return new Validator(data,validateRule.rules(),messages,attributes);
+    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<MessageHaystack, Object> messages, Haystack<AttributeHaystack, String> attributes) {
+        return new Validator(data, validateRule.rules(), messages, attributes);
     }
 
     @Override

@@ -1,14 +1,10 @@
 package hema.web.validation.concerns.store;
 
-import hema.web.validation.contracts.source.Sourceable;
-
-public class AttributeSource extends AbstractSource {
+public non-sealed class AttributeSource extends AbstractSource<AttributeSource, String> {
 
     @Override
-    public Sourceable add(String attribute, String value) {
-
+    public AttributeSource add(String attribute, String value) {
         source.put(attribute, value);
-
         return this;
     }
 }

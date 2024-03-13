@@ -1,12 +1,10 @@
 package hema.web.validation.contracts;
 
-import hema.web.validation.contracts.source.SimpleSource;
-import hema.web.validation.contracts.source.Sourceable;
 import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
-public interface Factory {
+public interface Factory<T extends Haystack<T, Object>, U extends Haystack<U, String>> {
 
     /**
      * Create a new Validator instance.
@@ -17,7 +15,7 @@ public interface Factory {
      * @param attributes   Custom attribute name.
      * @return Return new Validator instance.
      */
-    Validator make(Map<String, Object> data, ValidateRule validateRule, SimpleSource messages, Sourceable attributes);
+    Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<T, Object> messages, Haystack<U, String> attributes);
 
     void extend(String rule, ValidateClosure validateClosure, @Nullable String message);
 

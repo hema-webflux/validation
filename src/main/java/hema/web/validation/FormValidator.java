@@ -1,16 +1,15 @@
 package hema.web.validation;
 
-import hema.web.validation.concerns.store.AttributeSource;
-import hema.web.validation.concerns.store.MessageSource;
+import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.*;
-import hema.web.validation.contracts.source.SimpleSource;
-import hema.web.validation.contracts.source.Sourceable;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 import jakarta.annotation.Resource;
 import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public abstract class FormValidator implements ValidatesWhenResolved {
@@ -57,21 +56,21 @@ public abstract class FormValidator implements ValidatesWhenResolved {
     /**
      * Get custom messages for validator errors.
      *
-     * @param messageSource SimpleSource
-     * @return SimpleSource
+     * @param haystacks Haystack
+     * @return Haystack
      */
-    protected SimpleSource messages(SimpleSource messageSource) {
-        return messageSource;
+    protected MessageHaystack messages(MessageHaystack haystacks) {
+        return haystacks.setNullable(true);
     }
 
     /**
      * Get custom attributes for validator errors.
      *
-     * @param attributeSource Sourceable
-     * @return Sourceable
+     * @param haystacks Haystack
+     * @return Haystack
      */
-    protected Sourceable attributes(Sourceable attributeSource) {
-        return attributeSource;
+    protected AttributeHaystack attributes(AttributeHaystack haystacks) {
+        return haystacks.setNullable(true);
     }
 
     final protected Validator getValidatorInstance() {
@@ -79,7 +78,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
             return validator;
         }
 
-        Factory factory = container.getBean(Factory.class);
+        Factory<MessageHaystack, AttributeHaystack> factory = container.getBean(Factory.class);
 
         Validator validator = createDefaultValidator(factory);
 
@@ -88,7 +87,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
         return validator;
     }
 
-    final protected Validator createDefaultValidator(Factory factory) {
+    final protected Validator createDefaultValidator(Factory<MessageHaystack, AttributeHaystack> factory) {
 
         ValidateRule validateRule = container.getBean(ValidateRule.class);
 
@@ -97,8 +96,8 @@ public abstract class FormValidator implements ValidatesWhenResolved {
         return factory.make(
                 validationData(),
                 validateRule,
-                messages(new MessageSource()),
-                attributes(new AttributeSource())
+                messages(new MessageHaystack(new HashMap<>(), new HashSet<>())),
+                attributes(new AttributeHaystack(new HashMap<>()))
         );
     }
 

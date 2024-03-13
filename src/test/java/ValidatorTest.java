@@ -1,7 +1,7 @@
 import hema.web.validation.FormValidator;
+import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.ValidateRule;
-import hema.web.validation.contracts.source.SimpleSource;
-import hema.web.validation.contracts.source.Sourceable;
 
 public class ValidatorTest extends FormValidator {
 
@@ -18,16 +18,15 @@ public class ValidatorTest extends FormValidator {
     }
 
     @Override
-    protected Sourceable attributes(Sourceable store) {
-        return store
-                .add("name", "用户名")
+    protected AttributeHaystack attributes(AttributeHaystack haystacks) {
+        return haystacks.add("name", "用户名")
                 .add("email", "邮箱")
                 .add("phone", "手机号");
     }
 
     @Override
-    protected SimpleSource messages(SimpleSource store) {
-        return store.add("name*", closure -> (
+    protected MessageHaystack messages(MessageHaystack haystacks) {
+        return haystacks.add("name*", closure -> (
                         closure.add("required", "xxx")
                                 .add("string", "xxx")
                 ))

@@ -1,24 +1,12 @@
 package hema.web.validation;
 
+import hema.web.contracts.anonymous.Nullable;
+
+import java.util.function.UnaryOperator;
+
 public class Main {
 
     public static void main(String[] args) {
-
-        new Parent().test();
-
-    }
-
-    static class Parent {
-
-        public void test(){
-
-            System.out.println();
-
-        }
-
-    }
-
-    static class Sub extends Parent {
 
     }
 

@@ -1,9 +1,10 @@
 package hema.web.validation.concerns;
 
+import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.MessageHaystack;
+import hema.web.validation.contracts.Haystack;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
-import hema.web.validation.contracts.source.SimpleSource;
-import hema.web.validation.contracts.source.Sourceable;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
 import hema.web.validation.message.ValidateMessageBag;
@@ -15,9 +16,9 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Map<String, Object> data;
 
-    private final SimpleSource messages;
+    private final Haystack<MessageHaystack, Object> messages;
 
-    private final Sourceable attributes;
+    private final Haystack<AttributeHaystack, String> attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
 
@@ -52,7 +53,8 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             "Before"
     };
 
-    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules, SimpleSource messages, Sourceable attributes) {
+    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules,
+              Haystack<MessageHaystack, Object> messages, Haystack<AttributeHaystack, String> attributes) {
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
@@ -162,7 +164,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
                 .replace("__asterisk__", "*");
     }
 
-    public void addFailure(String attribute,String rule) {
+    public void addFailure(String attribute, String rule) {
 
         if (messageBag == null) {
             passes();
