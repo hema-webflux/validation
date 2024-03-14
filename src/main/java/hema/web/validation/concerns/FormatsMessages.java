@@ -10,6 +10,8 @@ public interface FormatsMessages {
 
     String replacePlaceholderInString(String attribute);
 
+    String getMessage(String attribute, String rule);
+
     /**
      * Get the inline message for a rule if it exists.
      *
@@ -62,6 +64,17 @@ public interface FormatsMessages {
         return message.replace(":attribute", value)
                 .replace(":ATTRIBUTE", value.toUpperCase())
                 .replace(":Attribute", Str.ucFirst(value));
+    }
+
+    default boolean hasRule(String needle, String[] haystack) {
+
+        for (String rule : haystack) {
+            if (rule.equals(needle)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
