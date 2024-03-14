@@ -1,8 +1,6 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.concerns.haystack.AttributeHaystack;
 import hema.web.validation.concerns.haystack.Haystack;
-import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;
@@ -16,9 +14,9 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Map<String, Object> data;
 
-    private final Haystack<MessageHaystack, Object> messages;
+    private final Haystack<Object> messages;
 
-    private final Haystack<AttributeHaystack, String> attributes;
+    private final Haystack<String> attributes;
 
     private final Map<String, Set<ValidateRule.Access>> initialRules;
 
@@ -54,7 +52,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     };
 
     Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules,
-              Haystack<MessageHaystack, Object> messages, Haystack<AttributeHaystack, String> attributes) {
+              Haystack<Object> messages, Haystack<String> attributes) {
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;

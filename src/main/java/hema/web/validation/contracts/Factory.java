@@ -16,7 +16,7 @@ public interface Factory {
      * @param attributes   Custom rule attribute name.
      * @return Return new Validator instance.
      */
-    Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<?, Object> messages, Haystack<?, String> attributes);
+    Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<Object> messages, Haystack<String> attributes);
 
     void extend(String rule, ValidateClosure validateClosure, @Nullable String message);
 

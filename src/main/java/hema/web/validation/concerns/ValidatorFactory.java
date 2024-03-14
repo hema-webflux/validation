@@ -10,7 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Map;
 
-final class ValidatorFactory implements Factory,ApplicationListener<ContextRefreshedEvent> {
+final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
 
     private final Map<String, String> fallbackMessages;
 
@@ -25,13 +25,12 @@ final class ValidatorFactory implements Factory,ApplicationListener<ContextRefre
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<?, Object> messages, Haystack<?, String> attributes) {
+    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<Object> messages, Haystack<String> attributes) {
         return new Validator(
                 data,
                 validateRule.rules(),
-                (Haystack<MessageHaystack, Object>) messages,
-                (Haystack<AttributeHaystack, String>) attributes
+                messages,
+                attributes
         );
     }
 

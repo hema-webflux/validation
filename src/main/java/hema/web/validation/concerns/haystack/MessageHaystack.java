@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-public non-sealed class MessageHaystack extends Haystack<MessageHaystack,Object> {
+public non-sealed class MessageHaystack extends Haystack<Object> {
 
     private final Set<String> fallbacks;
 

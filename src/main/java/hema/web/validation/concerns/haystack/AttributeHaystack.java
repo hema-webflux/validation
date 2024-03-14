@@ -2,7 +2,7 @@ package hema.web.validation.concerns.haystack;
 
 import java.util.Map;
 
-public non-sealed class AttributeHaystack extends Haystack<AttributeHaystack, String> {
+public non-sealed class AttributeHaystack extends Haystack<String> {
 
     public AttributeHaystack(Map<String, String> haystacks) {
         super(haystacks);

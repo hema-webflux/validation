@@ -2,7 +2,6 @@ package hema.web.validation.concerns;
 
 import hema.web.validation.concerns.haystack.AttributeHaystack;
 import hema.web.validation.concerns.haystack.Haystack;
-import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.message.Str;
 
 import java.util.regex.Pattern;
@@ -19,7 +18,7 @@ public interface FormatsMessages {
      * @param haystack  SimpleSource
      * @return String
      */
-    default String getFromLocalArray(String attribute, String lowerRule, Haystack<MessageHaystack, Object> haystack) {
+    default String getFromLocalArray(String attribute, String lowerRule, Haystack<Object> haystack) {
 
         String[] searches = {String.format("%s.%s", attribute, lowerRule), lowerRule, attribute};
 
@@ -55,7 +54,7 @@ public interface FormatsMessages {
         return "";
     }
 
-    private boolean isSourceClause(String attribute, String rule, Haystack<MessageHaystack, Object> haystack) {
+    private boolean isSourceClause(String attribute, String rule, Haystack<Object> haystack) {
         return haystack.hasNeedleInHaystack(attribute) && ((AttributeHaystack) haystack.getFromHaystack(attribute)).hasNeedleInHaystack(rule);
     }
 
