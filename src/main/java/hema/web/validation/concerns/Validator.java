@@ -1,8 +1,8 @@
 package hema.web.validation.concerns;
 
 import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.concerns.haystack.MessageHaystack;
-import hema.web.validation.contracts.Haystack;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;

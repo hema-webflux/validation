@@ -1,29 +1,17 @@
 package hema.web.validation.concerns.haystack;
 
-import hema.web.contracts.anonymous.Nullable;
-import hema.web.validation.contracts.Haystack;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-public class MessageHaystack implements Haystack<MessageHaystack, Object>, Nullable {
-
-    private final Map<String, Object> haystacks;
+public non-sealed class MessageHaystack extends Haystack<MessageHaystack,Object> {
 
     private final Set<String> fallbacks;
 
-    private boolean nullable = false;
-
     public MessageHaystack(Map<String, Object> haystacks, Set<String> fallbacks) {
-        this.haystacks = haystacks;
+        super(haystacks);
         this.fallbacks = fallbacks;
-    }
-
-    public MessageHaystack setNullable(boolean nullable) {
-        this.nullable = nullable;
-        return this;
     }
 
     @Override
@@ -48,13 +36,4 @@ public class MessageHaystack implements Haystack<MessageHaystack, Object>, Nulla
         return fallbacks.contains(needle);
     }
 
-    @Override
-    public String[] needles() {
-        return haystacks.keySet().toArray(new String[0]);
-    }
-
-    @Override
-    public boolean isNullable() {
-        return nullable;
-    }
 }

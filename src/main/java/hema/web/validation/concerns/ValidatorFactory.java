@@ -1,6 +1,7 @@
 package hema.web.validation.concerns;
 
 import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.*;
 import org.springframework.context.ApplicationContext;
@@ -9,7 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Map;
 
-final class ValidatorFactory implements Factory<MessageHaystack, AttributeHaystack>, ApplicationListener<ContextRefreshedEvent> {
+final class ValidatorFactory implements Factory,ApplicationListener<ContextRefreshedEvent> {
 
     private final Map<String, String> fallbackMessages;
 
@@ -24,8 +25,14 @@ final class ValidatorFactory implements Factory<MessageHaystack, AttributeHaysta
     }
 
     @Override
-    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<MessageHaystack, Object> messages, Haystack<AttributeHaystack, String> attributes) {
-        return new Validator(data, validateRule.rules(), messages, attributes);
+    @SuppressWarnings("unchecked")
+    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<?, Object> messages, Haystack<?, String> attributes) {
+        return new Validator(
+                data,
+                validateRule.rules(),
+                (Haystack<MessageHaystack, Object>) messages,
+                (Haystack<AttributeHaystack, String>) attributes
+        );
     }
 
     @Override

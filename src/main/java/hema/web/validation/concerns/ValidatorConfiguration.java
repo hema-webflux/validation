@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
+import java.util.HashMap;
+
 @Configuration
 public class ValidatorConfiguration {
 
@@ -18,7 +20,7 @@ public class ValidatorConfiguration {
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(applicationContext);
+        return new ValidatorFactory(applicationContext,new HashMap<>(),new HashMap<>());
     }
 
 }

@@ -60,7 +60,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
      * @return Haystack
      */
     protected MessageHaystack messages(MessageHaystack haystacks) {
-        return haystacks.setNullable(true);
+        return (MessageHaystack) haystacks.setNullable(true);
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class FormValidator implements ValidatesWhenResolved {
      * @return Haystack
      */
     protected AttributeHaystack attributes(AttributeHaystack haystacks) {
-        return haystacks.setNullable(true);
+        return (AttributeHaystack) haystacks.setNullable(true);
     }
 
     final protected Validator getValidatorInstance() {
@@ -78,16 +78,14 @@ public abstract class FormValidator implements ValidatesWhenResolved {
             return validator;
         }
 
-        Factory<MessageHaystack, AttributeHaystack> factory = container.getBean(Factory.class);
-
-        Validator validator = createDefaultValidator(factory);
+        Validator validator = createDefaultValidator(container.getBean(Factory.class));
 
         setValidator(validator);
 
         return validator;
     }
 
-    final protected Validator createDefaultValidator(Factory<MessageHaystack, AttributeHaystack> factory) {
+    final protected Validator createDefaultValidator(Factory factory) {
 
         ValidateRule validateRule = container.getBean(ValidateRule.class);
 
