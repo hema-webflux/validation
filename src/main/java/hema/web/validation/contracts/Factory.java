@@ -13,7 +13,7 @@ public interface Factory {
      * @param data         Input data.
      * @param validateRule Rule proxy.
      * @param messages     Custom rule validate Message sources.
-     * @param attributes   Custom attribute name.
+     * @param attributes   Custom rule attribute name.
      * @return Return new Validator instance.
      */
     Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<?, Object> messages, Haystack<?, String> attributes);
