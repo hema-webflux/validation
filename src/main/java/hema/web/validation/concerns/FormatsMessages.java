@@ -33,8 +33,9 @@ public interface FormatsMessages {
                     pattern = pattern.replace("\\*", "([^.]*)");
 
                     if (Pattern.compile("^" + pattern + "\\z").matcher(search).matches()) {
-                        return isSourceClause(sourceKey, lowerRule, haystack)
-                                ? ((AttributeHaystack) haystack.getFromHaystack(sourceKey)).getFromHaystack(lowerRule)
+                        String needle = sourceKey + "." + lowerRule;
+                        return haystack.hasNeedleInHaystack(needle)
+                                ? (String) haystack.getFromHaystack(needle)
                                 : (String) haystack.getFromHaystack(sourceKey);
                     }
 
@@ -42,8 +43,11 @@ public interface FormatsMessages {
                 }
 
                 if (Str.is(sourceKey, search)) {
-                    return sourceKey.equals(attribute) && isSourceClause(sourceKey, lowerRule, haystack)
-                            ? ((AttributeHaystack) haystack.getFromHaystack(sourceKey)).getFromHaystack(lowerRule)
+
+                    String needle = sourceKey + "." + lowerRule;
+
+                    return sourceKey.equals(attribute) && haystack.hasNeedleInHaystack(needle)
+                            ? (String) haystack.getFromHaystack(needle)
                             : (String) haystack.getFromHaystack(sourceKey);
                 }
 
@@ -52,10 +56,6 @@ public interface FormatsMessages {
         }
 
         return "";
-    }
-
-    private boolean isSourceClause(String attribute, String rule, Haystack<Object> haystack) {
-        return haystack.hasNeedleInHaystack(attribute) && ((AttributeHaystack) haystack.getFromHaystack(attribute)).hasNeedleInHaystack(rule);
     }
 
     default String replaceAttributePlaceholder(String message, String value) {

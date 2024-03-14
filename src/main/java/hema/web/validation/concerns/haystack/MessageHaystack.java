@@ -28,12 +28,19 @@ public non-sealed class MessageHaystack extends Haystack<Object> {
 
     @Override
     public Object getFromHaystack(String needle) {
+
+        if (needle.contains(".")) {
+            String[] needles = needle.split("\\.");
+            return ((AttributeHaystack) haystacks.get(needles[0])).getFromHaystack(needles[1]);
+        }
+
         return haystacks.get(needle);
     }
 
     @Override
     public boolean hasNeedleInHaystack(String needle) {
-        return fallbacks.contains(needle);
+        String[] needles = needle.split("\\.");
+        return fallbacks.contains(needles[0]) && ((AttributeHaystack) getFromHaystack(needles[0])).hasNeedleInHaystack(needles[1]);
     }
 
 }
