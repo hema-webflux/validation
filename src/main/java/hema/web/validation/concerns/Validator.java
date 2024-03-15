@@ -185,18 +185,18 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
         String lowerRule = "使用snake格式化rule";
 
-        String customKey = STR."validation.custom.\{attribute}.\{lowerRule}";
+        String customKey = String.format("validation.custom.%s.%s", attribute, lowerRule);
 
         String customMessage = getCustomMessageFromTranslator(
                 hasRule(rule, sizeRules)
-                        ? new String[]{STR."\{customKey}.\{getAttributeType(attribute)}", customKey}
+                        ? new String[]{customKey + "." + getAttributeType(attribute), customKey}
                         : new String[]{customKey}
         );
 
         if (!customMessage.equals(customKey)) {
             return customMessage;
         } else if (hasRule(rule, sizeRules)) {
-            return getSizeMessage(attribute, rule);
+            return getSizeMessage(attributeWithPlaceholders, rule);
         }
 
         String translatorKey = String.format("validation.%s", lowerRule);
