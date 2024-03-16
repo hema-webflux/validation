@@ -1,6 +1,7 @@
 package hema.web.validation.translation;
 
 import hema.web.validation.contracts.translation.Loader;
+import hema.web.validation.contracts.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class TranslationConfiguration {
 
     @Bean
     @Lazy
-    public hema.web.validation.contracts.translation.Translator translator() {
+    public Translation translator() {
         return new Translator(loader(), "en");
     }
 
