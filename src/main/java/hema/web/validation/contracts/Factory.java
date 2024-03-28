@@ -1,7 +1,6 @@
 package hema.web.validation.contracts;
 
 import hema.web.validation.concerns.haystack.Haystack;
-import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
@@ -18,6 +17,11 @@ public interface Factory {
      */
     Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<Object> messages, Haystack<String> attributes);
 
-    void extend(String rule, ValidateClosure validateClosure, @Nullable String message);
+    void extend(String rule, CustomValidateRulePredicate closure, String message);
+
+    @FunctionalInterface
+    interface CustomValidateRulePredicate {
+        boolean validate(String attribute, Object value, Map<String, Object> parameters);
+    }
 
 }

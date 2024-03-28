@@ -3,12 +3,15 @@ package hema.web.validation.translation;
 import hema.web.validation.message.Str;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-public class NamespacedItemResolver {
+class NamespacedItemResolver {
 
-    private final Map<String, String[]> parsed = new HashMap<>();
+    private final Map<String, String[]> parsed;
+
+    NamespacedItemResolver(Map<String, String[]> parsed) {
+        this.parsed = parsed;
+    }
 
     public final String[] parseKey(String key) {
 
@@ -27,9 +30,11 @@ public class NamespacedItemResolver {
 
         String group = segments[0];
 
-        String item = segments.length == 1
-                ? null
-                : Str.implode(".", Arrays.copyOfRange(segments, 1, segments.length - 1));
+        String item = null;
+
+        if (segments.length == 1) {
+            item = Str.implode(".", Arrays.copyOfRange(segments, 1, segments.length - 1));
+        }
 
         return new String[]{null, group, item};
     }

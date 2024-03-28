@@ -1,13 +1,19 @@
 package hema.web.validation;
 
-import hema.web.contracts.anonymous.Nullable;
-
-import java.util.function.UnaryOperator;
+import hema.web.validation.contracts.Factory;
 
 public class Main {
 
     public static void main(String[] args) {
 
+        Factory factory = null;
+
+        factory.extend("phone", (attribute, value, parameters) -> {
+
+            Object val = parameters.get("xx");
+
+            return value.equals(val);
+        }, "xxx");
     }
 
 }

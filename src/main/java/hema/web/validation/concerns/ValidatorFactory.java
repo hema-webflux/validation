@@ -1,9 +1,9 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.concerns.haystack.AttributeHaystack;
+import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
-import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.*;
+import hema.web.validation.contracts.translation.Translator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,12 +14,12 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
 
     private final Map<String, String> fallbackMessages;
 
-    private final Map<String, ValidateClosure> extensions;
+    private final Map<String, Factory.CustomValidateRulePredicate> extensions;
 
-    private ApplicationContext applicationContext;
+    private ApplicationContext context;
 
-    public ValidatorFactory(ApplicationContext applicationContext, Map<String, String> fallbackMessages, Map<String, ValidateClosure> extensions) {
-        this.applicationContext = applicationContext;
+    public ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages, Map<String, Factory.CustomValidateRulePredicate> extensions) {
+        this.context = context;
         this.fallbackMessages = fallbackMessages;
         this.extensions = extensions;
     }
@@ -30,22 +30,21 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
                 data,
                 validateRule.rules(),
                 messages,
-                attributes
+                attributes,
+                attributes,
+                context.getBean(Inflector.class),
+                context.getBean(Translator.class)
         );
     }
 
     @Override
-    public void extend(String rule, ValidateClosure validateClosure, String message) {
-
-        extensions.put(rule, validateClosure);
-
-        if (message != null) {
-            fallbackMessages.put(rule, message);
-        }
+    public void extend(String rule, Factory.CustomValidateRulePredicate closure, String message) {
+        extensions.put(rule, closure);
+        fallbackMessages.put(rule, message);
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        this.applicationContext = event.getApplicationContext();
+        this.context = event.getApplicationContext();
     }
 }

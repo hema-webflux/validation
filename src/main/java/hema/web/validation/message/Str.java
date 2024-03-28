@@ -41,7 +41,7 @@ public class Str {
 
         haystack = haystack.replace("\\*", ".*");
 
-        Pattern pattern = Pattern.compile("^" + haystack + "\\z", Pattern.UNICODE_CASE);
+        Pattern pattern = Pattern.compile(STR."^\{haystack}\\z", Pattern.UNICODE_CASE);
 
         Matcher matcher = pattern.matcher(needle);
 
@@ -53,7 +53,7 @@ public class Str {
         String regex = "[.\\\\+*?\\[\\]^$(){}=!<>|:-]";
 
         if (delimiter != null && !delimiter.isEmpty()) {
-            regex += "|" + Pattern.quote(delimiter);
+            regex += STR."|\{Pattern.quote(delimiter)}";
         }
 
         Pattern pattern = Pattern.compile(regex);
@@ -61,7 +61,7 @@ public class Str {
 
         StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
-            matcher.appendReplacement(buffer, "\\\\" + matcher.group());
+            matcher.appendReplacement(buffer, STR."\\\\\{matcher.group()}");
         }
         matcher.appendTail(buffer);
 

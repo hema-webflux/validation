@@ -8,9 +8,10 @@ public class Translator extends NamespacedItemResolver implements hema.web.valid
 
     private final Loader loader;
 
-    private final String locale;
+    private String locale;
 
-    Translator(Loader loader, String locale) {
+    Translator(Loader loader, String locale, Map<String, String[]> parsed) {
+        super(parsed);
         this.loader = loader;
         this.locale = locale;
     }
@@ -27,11 +28,11 @@ public class Translator extends NamespacedItemResolver implements hema.web.valid
 
     @Override
     public String getLocale() {
-        return null;
+        return locale;
     }
 
     @Override
     public void setLocale(String locale) {
-
+        this.locale = locale;
     }
 }

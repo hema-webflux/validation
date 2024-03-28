@@ -2,9 +2,7 @@ package hema.web.validation.contracts;
 
 import org.springframework.lang.NonNull;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 public interface ValidateRule {
 
@@ -124,47 +122,5 @@ public interface ValidateRule {
 
     <T> ValidateRule tryEnum(@NonNull Class<T> enumClass);
 
-    Map<String, Set<Access>> rules();
-
-    interface Access {
-
-        Access setData(Object[] data);
-
-        <T> T first(Class<T> kind);
-
-        String other();
-
-        Object[] parameters();
-
-        Access clone();
-
-        default Object[] convertValuesToBoolean(Object[] values) {
-            return Arrays.stream(values)
-                    .map(value -> {
-
-                        if (isString(value)) {
-                            return switch ((String) value) {
-                                case "true" -> true;
-                                case "false" -> false;
-                                default -> value;
-                            };
-                        }
-
-                        return value;
-                    }).toArray();
-        }
-
-        default Object[] convertValuesToNull(Object[] values) {
-            return Arrays.stream(values)
-                    .map(value -> (isString(value) && value.toString().equalsIgnoreCase("null"))
-                            ? null
-                            : value
-                    )
-                    .toArray();
-        }
-
-        private <T> boolean isString(T value) {
-            return value instanceof String;
-        }
-    }
+    Map<String, Object[]> rules();
 }

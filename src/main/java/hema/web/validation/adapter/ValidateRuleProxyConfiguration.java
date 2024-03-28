@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 
 @Configuration
 public class ValidateRuleProxyConfiguration {
@@ -18,13 +19,7 @@ public class ValidateRuleProxyConfiguration {
         return (ValidateRule) Proxy.newProxyInstance(
                 ValidateRule.class.getClassLoader(),
                 new Class[]{ValidateRule.class},
-                new ValidateRuleProxy(access())
+                new ValidateRuleProxy(new HashMap<>())
         );
-    }
-
-    @Bean
-    @Lazy
-    public ValidateRule.Access access() {
-        return new ArrayAccess();
     }
 }

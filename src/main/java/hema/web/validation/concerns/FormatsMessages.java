@@ -1,6 +1,5 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.concerns.haystack.AttributeHaystack;
 import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.message.Str;
 
@@ -34,8 +33,8 @@ public interface FormatsMessages {
 
                     pattern = pattern.replace("\\*", "([^.]*)");
 
-                    if (Pattern.compile("^" + pattern + "\\z").matcher(search).matches()) {
-                        String needle = sourceKey + "." + lowerRule;
+                    if (Pattern.compile(STR."^\{pattern}\\z").matcher(search).matches()) {
+                        String needle = STR."\{sourceKey}.\{lowerRule}";
                         return haystack.hasNeedleInHaystack(needle)
                                 ? (String) haystack.getFromHaystack(needle)
                                 : (String) haystack.getFromHaystack(sourceKey);
@@ -46,7 +45,7 @@ public interface FormatsMessages {
 
                 if (Str.is(sourceKey, search)) {
 
-                    String needle = sourceKey + "." + lowerRule;
+                    String needle = STR."\{sourceKey}.\{lowerRule}";
 
                     return sourceKey.equals(attribute) && haystack.hasNeedleInHaystack(needle)
                             ? (String) haystack.getFromHaystack(needle)
@@ -75,6 +74,22 @@ public interface FormatsMessages {
         }
 
         return false;
+    }
+
+    private String numberToIndexOrPositionWord(int value) {
+        return switch (value) {
+            case 1 -> "first";
+            case 2 -> "second";
+            case 3 -> "third";
+            case 4 -> "fourth";
+            case 5 -> "fifth";
+            case 6 -> "sixth";
+            case 7 -> "seventh";
+            case 8 -> "eighth";
+            case 9 -> "ninth";
+            case 10 -> "tenth";
+            default -> "other";
+        };
     }
 
 }

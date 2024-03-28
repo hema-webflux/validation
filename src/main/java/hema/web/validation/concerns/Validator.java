@@ -1,16 +1,15 @@
 package hema.web.validation.concerns;
 
+import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
-import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.contracts.translation.Translator;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
-import hema.web.validation.message.ValidateMessageBag;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
 
@@ -20,15 +19,17 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Haystack<String> attributes;
 
-    private final Map<String, Set<ValidateRule.Access>> initialRules;
+    private final Map<String, Object[]> initialRules;
 
-    private final Haystack<Object> fallbackMessage;
+    private final Haystack<String> fallbackMessage;
 
     private final Translator translator;
 
     private final String dotPlaceholder;
 
     private MessageBag messageBag = null;
+
+    private final Inflector inflector;
 
     private final String[] implicitRules = {
             "Accepted",
@@ -64,11 +65,15 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     };
 
     private final String[] numericRule = {
-
+            "Integer",
+            "Numeric"
     };
 
-    Validator(Map<String, Object> data, Map<String, Set<ValidateRule.Access>> rules,
-              Haystack<Object> messages, Haystack<String> attributes, Translator translator, Haystack<String> fallbackMessage) {
+    Validator(Map<String, Object> data, Map<String, Object[]> rules,
+              Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage, Inflector inflector, Translator translator) {
+
+        this.dotPlaceholder = Str.random(16);
+
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
@@ -76,22 +81,22 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
         this.translator = translator;
         this.fallbackMessage = fallbackMessage;
 
-        this.dotPlaceholder = Str.random(16);
+        this.inflector = inflector;
     }
 
-    private void validateAttribute(String attribute, ValidateRule.Access access) {
+    private void validateAttribute(String attribute, Object[] parameters) {
 
-        if (access.other().isEmpty()) {
+        if (parameters.length == 0) {
             return;
         }
 
-        if (dependsOnOtherFields(access.other())) {
+        if (dependsOnOtherFields((String) parameters[0])) {
 
         }
 
         Object value = data.get(attribute);
 
-        boolean validatable = isValidatable(access.other(), attribute, value);
+        boolean validatable = isValidatable((String) parameters[0], attribute, value);
 
     }
 
@@ -104,14 +109,6 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     private boolean isValidatable(String rule, String attribute, Object value) {
 
         return false;
-    }
-
-    private <T> String tryConvertToString(T value) {
-        try {
-            return String.valueOf(value);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
@@ -140,11 +137,6 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     }
 
     @Override
-    public <T> T getModel(Class<? extends T> kind) {
-        return null;
-    }
-
-    @Override
     public boolean fails() {
         return false;
     }
@@ -155,8 +147,8 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     }
 
     @Override
-    public ValidateMessageBag errors() {
-        return null;
+    public MessageBag errors() {
+        return messageBag;
     }
 
     public boolean passes() {
@@ -183,13 +175,13 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
             return inlineMessage;
         }
 
-        String lowerRule = "使用snake格式化rule";
+        String lowerRule = inflector.snake(rule, "_");
 
-        String customKey = String.format("validation.custom.%s.%s", attribute, lowerRule);
+        String customKey = STR."validation.custom.\{attribute}.\{lowerRule}";
 
         String customMessage = getCustomMessageFromTranslator(
                 hasRule(rule, sizeRules)
-                        ? new String[]{customKey + "." + getAttributeType(attribute), customKey}
+                        ? new String[]{STR."\{customKey}.\{getAttributeType(attribute)}", customKey}
                         : new String[]{customKey}
         );
 
@@ -212,9 +204,9 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private String getSizeMessage(String attribute, String rule) {
 
-        String lowerRule = "使用sanke格式化";
+        String lowerRule = inflector.snake(rule, "_");
 
-        String translatorKey = String.format("validation.%s.%s", lowerRule, getAttributeType(attribute));
+        String translatorKey = STR."validation.\{lowerRule}.\{getAttributeType(attribute)}";
 
         return translator.get(translatorKey);
     }
@@ -240,7 +232,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     public void addFailure(String attribute, String rule) {
 
-        if (messageBag == null) {
+        if (Objects.isNull(messageBag)) {
             passes();
         }
 

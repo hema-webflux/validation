@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
+import java.util.HashMap;
+
 @Configuration
 public class TranslationConfiguration {
 
@@ -20,15 +22,16 @@ public class TranslationConfiguration {
     @Bean
     @Lazy
     public hema.web.validation.contracts.translation.Translator translator() {
-        return new Translator(loader(), "en");
+        return new Translator(loader(), "en", new HashMap<>());
     }
 
     @Bean
     @Lazy
     public Loader loader() {
-        return new FileLoader(applicationContext.getBean(FileSystemResourceLoader.class), new String[]{
-                String.format("%s%s", ResourceLoader.CLASSPATH_URL_PREFIX, "lang")
-        });
+        return new FileLoader(
+                applicationContext.getBean(FileSystemResourceLoader.class),
+                new String[]{STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang"}
+        );
     }
 
 }

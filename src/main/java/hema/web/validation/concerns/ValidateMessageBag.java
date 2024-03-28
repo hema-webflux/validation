@@ -1,6 +1,7 @@
-package hema.web.validation.message;
+package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.MessageBag;
+import hema.web.validation.message.Str;
 import org.springframework.lang.Nullable;
 
 import java.util.*;

@@ -26,9 +26,9 @@ interface ValidateAttributes {
         return validateRequired(value) && hasAcceptable(value);
     }
 
-    default <T> boolean validateRequiredIf(T value, ValidateRule.Access access) throws HttpException {
+    default <T> boolean validateRequiredIf(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(2, access.parameters(), "acceptedIf");
+        InvalidArgumentException.requireParameterCount(2, parameters, "acceptedIf");
 
         return true;
     }
@@ -64,26 +64,26 @@ interface ValidateAttributes {
         return false;
     }
 
-    default <T> boolean before(T value, ValidateRule.Access access) {
+    default <T> boolean before(T value, Object[] parameters) {
 
         if (!validateDate(value)) {
             return false;
         }
 
-        return DateValidator.isTimeBeforeSpecificTime((String) value, access.first(String.class));
+        return DateValidator.isTimeBeforeSpecificTime((String) value, String.valueOf(parameters[0]));
     }
 
-    default <T> boolean after(T value, ValidateRule.Access access) {
-        return DateValidator.isTimeAfterSpecificTime((String) value, access.first(String.class));
+    default <T> boolean after(T value, Object[] parameters) {
+        return DateValidator.isTimeAfterSpecificTime((String) value, String.valueOf(parameters[0]));
     }
 
-    default <T> boolean dateEquals(T value, ValidateRule.Access access) {
+    default <T> boolean dateEquals(T value, Object[] parameters) {
 
         if (!validateDate(value)) {
             return false;
         }
 
-        return DateValidator.isEquals((String) value, access.first(String.class));
+        return DateValidator.isEquals((String) value, String.valueOf(parameters[0]));
     }
 
     default <T> boolean validateDate(T value) {
@@ -95,44 +95,43 @@ interface ValidateAttributes {
         return DateValidator.isDateFormat(DateValidator.DEFAULT_FORMAT, String.valueOf(value));
     }
 
-    default <T> boolean validateRequiredUnless(T value, ValidateRule.Access access) throws HttpException {
+    default <T> boolean validateRequiredUnless(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(2, access.parameters(), "requiredUnless");
+        InvalidArgumentException.requireParameterCount(2, parameters, "requiredUnless");
 
         return true;
     }
 
+    default <T> boolean validateRequiredWith(T value, Object[] parameters) {
 
-    default <T> boolean validateRequiredWith(T value, ValidateRule.Access access) {
-
-        if (!allFailingRequired(access.parameters())) {
+        if (!allFailingRequired(parameters)) {
             return validateRequired(value);
         }
 
         return true;
     }
 
-    default <T> boolean validateRequiredWithAll(T value, ValidateRule.Access access) {
+    default <T> boolean validateRequiredWithAll(T value, Object[] parameters) {
 
-        if (!anyFailingRequired(access.parameters())) {
+        if (!anyFailingRequired(parameters)) {
             return validateRequired(value);
         }
 
         return true;
     }
 
-    default <T> boolean validateRequiredWithOut(T value, ValidateRule.Access access) {
+    default <T> boolean validateRequiredWithOut(T value, Object[] parameters) {
 
-        if (anyFailingRequired(access.parameters())) {
+        if (anyFailingRequired(parameters)) {
             return validateRequired(value);
         }
 
         return true;
     }
 
-    default <T> boolean validateRequiredWithOutAll(T value, ValidateRule.Access access) {
+    default <T> boolean validateRequiredWithOutAll(T value, Object[] parameters) {
 
-        if (allFailingRequired(access.parameters())) {
+        if (allFailingRequired(parameters)) {
             return validateRequired(value);
         }
 
@@ -178,12 +177,11 @@ interface ValidateAttributes {
     /**
      * Validate that an map has all of the given keys.
      *
-     * @param value  T
-     * @param access Access
-     * @param <T>    Generic type.
+     * @param value T
+     * @param <T>   Generic type.
      * @return Boolean
      */
-    default <T> boolean validateRequiredMapKeys(T value, ValidateRule.Access access) {
+    default <T> boolean validateRequiredMapKeys(T value, Object[] parameters) {
 
         if (!validateMap(value)) {
             return false;
@@ -191,7 +189,7 @@ interface ValidateAttributes {
 
         Map<?, ?> maps = ((Map<?, ?>) value);
 
-        for (Object param : access.parameters()) {
+        for (Object param : parameters) {
             if (!maps.containsKey(param)) {
                 return false;
             }
@@ -200,18 +198,18 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateMin(T value, ValidateRule.Access access) throws HttpException {
+    default <T> boolean validateMin(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, access.parameters(), "min");
+        InvalidArgumentException.requireParameterCount(1, parameters, "min");
 
-        return getSize(value) >= access.first(Integer.class);
+        return getSize(value) >= (int) parameters[0];
     }
 
-    default <T> boolean validateMax(T value, ValidateRule.Access access) throws HttpException {
+    default <T> boolean validateMax(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, access.parameters(), "max");
+        InvalidArgumentException.requireParameterCount(1, parameters, "max");
 
-        return getSize(value) <= access.first(Integer.class);
+        return getSize(value) <= (int) parameters[0];
     }
 
     private <T> int getSize(T value) {
@@ -231,13 +229,13 @@ interface ValidateAttributes {
         return String.valueOf(value).trim().length();
     }
 
-    default <T> boolean validateIn(T value, ValidateRule.Access access) {
+    default <T> boolean validateIn(T value, Object[] parameters) {
 
-        if (access.parameters().length == 0) {
+        if (parameters.length == 0) {
             return false;
         }
 
-        return Set.of(access.parameters()).contains(value);
+        return Set.of(parameters).contains(value);
     }
 
     /**
@@ -342,39 +340,36 @@ interface ValidateAttributes {
     /**
      * Validate the size of an attribute.
      *
-     * @param value  T
-     * @param access Access
-     * @param <T>    Generic type.
+     * @param value T
+     * @param <T>   Generic type.
      * @return Boolean
      * @throws HttpException exception
      */
-    default <T> boolean validateSize(T value, ValidateRule.Access access) throws HttpException {
+    default <T> boolean validateSize(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, access.parameters(), "size");
+        InvalidArgumentException.requireParameterCount(1, parameters, "size");
 
-        return BigInteger.valueOf((long) value).equals(access.first(BigInteger.class));
+        return BigInteger.valueOf((long) value).equals(parameters[0]);
     }
 
     /**
      * Validate the attribute starts with a given substring.
      *
-     * @param value  String
-     * @param access Access
+     * @param value String
      * @return Boolean
      */
-    default boolean validateStartWith(String value, ValidateRule.Access access) {
-        return String.valueOf(value).startsWith(access.first(String.class));
+    default boolean validateStartWith(String value, Object[] parameters) {
+        return String.valueOf(value).startsWith(String.valueOf(parameters[0]));
     }
 
     /**
      * Validate the attribute ends with a given substring.
      *
-     * @param value  String
-     * @param access Access
+     * @param value String
      * @return Boolean
      */
-    default boolean validateEndWith(String value, ValidateRule.Access access) {
-        return String.valueOf(value).endsWith(access.first(String.class));
+    default boolean validateEndWith(String value, Object[] parameters) {
+        return String.valueOf(value).endsWith(String.valueOf(parameters[0]));
     }
 
     /**
@@ -459,6 +454,7 @@ interface ValidateAttributes {
         for (int i = 0; i < value.length(); i++) {
             if (!Character.isDigit(value.charAt(i))) {
                 isValid = false;
+                break;
             }
         }
 
@@ -530,7 +526,7 @@ interface ValidateAttributes {
      * @return Boolean
      */
     default <T> boolean validateMap(T value) {
-        return value instanceof Map<?, ?>;
+        return value instanceof Map;
     }
 
     /**
