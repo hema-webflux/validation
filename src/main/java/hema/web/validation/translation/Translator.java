@@ -1,10 +1,11 @@
 package hema.web.validation.translation;
 
 import hema.web.validation.contracts.translation.Loader;
+import hema.web.validation.contracts.translation.Translation;
 
 import java.util.Map;
 
-public class Translator extends NamespacedItemResolver implements hema.web.validation.contracts.translation.Translator {
+public class Translator extends NamespacedItemResolver implements Translation {
 
     private final Loader loader;
 
@@ -19,6 +20,17 @@ public class Translator extends NamespacedItemResolver implements hema.web.valid
     @Override
     public String get(String key, Map<String, Object> replace, String locale) {
         return null;
+    }
+
+    private String[] parse(String key) {
+
+        String[] segments = parseKey(key);
+
+        if (segments[0] == null) {
+            segments[0] = "*";
+        }
+
+        return segments;
     }
 
     @Override

@@ -4,7 +4,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
-public interface Translator {
+public interface Translation {
 
     String get(String key, Map<String, Object> replace, @Nullable String locale);
 
