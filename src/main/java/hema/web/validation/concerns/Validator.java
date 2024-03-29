@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
-final class Validator implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
+final class Validator extends ValidateRules implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
 
     private final Map<String, Object> data;
 
@@ -30,44 +30,6 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     private MessageBag messageBag = null;
 
     private final Inflector inflector;
-
-    private final String[] implicitRules = {
-            "Accepted",
-            "Required",
-            "String",
-            "Url",
-            "Integer",
-            "Numeric",
-            "Json",
-            "Map",
-            "Array",
-            "Uppercase",
-            "Lowercase",
-            "Email",
-            "Phone",
-            "Date",
-            "Bool",
-            "IdCard",
-            "BankCard"
-    };
-
-    private final String[] dependentRules = {
-            "Same",
-            "Confirmed",
-            "After",
-            "Before"
-    };
-
-    private final String[] sizeRules = {
-            "max",
-            "min",
-            "between"
-    };
-
-    private final String[] numericRule = {
-            "Integer",
-            "Numeric"
-    };
 
     Validator(Map<String, Object> data, Map<String, Object[]> rules,
               Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage, Inflector inflector, Translation translator) {

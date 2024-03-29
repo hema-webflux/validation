@@ -65,17 +65,6 @@ public interface FormatsMessages {
                 .replace(":Attribute", Str.ucFirst(value));
     }
 
-    default boolean hasRule(String needle, String[] haystack) {
-
-        for (String rule : haystack) {
-            if (rule.equals(needle)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private String numberToIndexOrPositionWord(int value) {
         return switch (value) {
             case 1 -> "first";
