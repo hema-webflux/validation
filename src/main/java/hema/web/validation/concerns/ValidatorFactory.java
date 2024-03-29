@@ -3,7 +3,7 @@ package hema.web.validation.concerns;
 import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.*;
-import hema.web.validation.contracts.translation.Translator;
+import hema.web.validation.contracts.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -33,7 +33,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
                 attributes,
                 attributes,
                 context.getBean(Inflector.class),
-                context.getBean(Translator.class)
+                context.getBean(Translation.class)
         );
     }
 

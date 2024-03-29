@@ -23,5 +23,4 @@ public interface Factory {
     interface CustomValidateRulePredicate {
         boolean validate(String attribute, Object value, Map<String, Object> parameters);
     }
-
 }

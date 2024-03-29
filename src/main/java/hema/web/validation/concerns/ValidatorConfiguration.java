@@ -1,14 +1,16 @@
 package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.Factory;
+import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.translation.TranslationConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.*;
 
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 @Configuration
+@Import({TranslationConfiguration.class})
 public class ValidatorConfiguration {
 
     private final ApplicationContext applicationContext;
@@ -20,7 +22,18 @@ public class ValidatorConfiguration {
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(applicationContext,new HashMap<>(),new HashMap<>());
+        return new ValidatorFactory(applicationContext, new HashMap<>(), new HashMap<>());
+    }
+
+    @Bean
+    @Lazy
+    @Scope("prototype")
+    public ValidateRule validateRule() {
+        return (ValidateRule) Proxy.newProxyInstance(
+                ValidateRule.class.getClassLoader(),
+                new Class[]{ValidateRule.class},
+                new ValidateRuleProxy(new HashMap<>())
+        );
     }
 
 }

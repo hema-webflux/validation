@@ -1,4 +1,4 @@
-package hema.web.validation.adapter;
+package hema.web.validation.concerns;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -27,7 +27,8 @@ final class ValidateRuleProxy implements InvocationHandler {
         }
 
         if (Objects.isNull(args)) {
-
+            rules.put(currentField, new Object[]{method.getName()});
+            return proxy;
         }
 
         return proxy;

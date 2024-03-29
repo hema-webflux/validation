@@ -3,7 +3,7 @@ package hema.web.validation.concerns;
 import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.MessageBag;
-import hema.web.validation.contracts.translation.Translator;
+import hema.web.validation.contracts.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
 
@@ -23,7 +23,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
 
     private final Haystack<String> fallbackMessage;
 
-    private final Translator translator;
+    private final Translation translator;
 
     private final String dotPlaceholder;
 
@@ -70,7 +70,7 @@ final class Validator implements hema.web.validation.contracts.Validator, Valida
     };
 
     Validator(Map<String, Object> data, Map<String, Object[]> rules,
-              Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage, Inflector inflector, Translator translator) {
+              Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage, Inflector inflector, Translation translator) {
 
         this.dotPlaceholder = Str.random(16);
 

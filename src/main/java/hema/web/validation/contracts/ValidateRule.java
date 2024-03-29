@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface ValidateRule {
 
-    ValidateRule add(@NonNull String field);
+    ValidateRule make(@NonNull String field);
 
     ValidateRule required();
 

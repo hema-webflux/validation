@@ -7,9 +7,9 @@ public class ValidatorTest extends FormValidator {
 
     @Override
     protected void rules(ValidateRule rule) {
-        rule.add("name").required().string();
-        rule.add("email").required().email();
-        rule.add("phone").required().phone().unique("users", "phone");
+        rule.make("name").required().string();
+        rule.make("email").required().email();
+        rule.make("phone").required().phone().unique("users", "phone");
     }
 
     @Override
