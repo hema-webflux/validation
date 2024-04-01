@@ -39,6 +39,10 @@ class ValidateRules {
             "Numeric"
     };
 
+    final protected boolean dependsOnOtherFields(String rule) {
+        return hasRule(rule, dependentRules);
+    }
+
     final protected boolean hasRule(String needle, String[] haystack) {
 
         for (String rule : haystack) {
@@ -49,5 +53,4 @@ class ValidateRules {
 
         return false;
     }
-
 }

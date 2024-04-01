@@ -187,10 +187,10 @@ interface ValidateAttributes {
             return false;
         }
 
-        Map<?, ?> maps = ((Map<?, ?>) value);
+        Map<String, ?> maps = ((Map<String, ?>) value);
 
         for (Object param : parameters) {
-            if (!maps.containsKey(param)) {
+            if (!maps.containsKey((String) param)) {
                 return false;
             }
         }
@@ -369,7 +369,7 @@ interface ValidateAttributes {
      * @return Boolean
      */
     default boolean validateEndWith(String value, Object[] parameters) {
-        return String.valueOf(value).endsWith(String.valueOf(parameters[0]));
+        return value.endsWith(String.valueOf(parameters[0]));
     }
 
     /**

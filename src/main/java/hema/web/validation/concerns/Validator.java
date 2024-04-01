@@ -73,21 +73,6 @@ final class Validator extends ValidateRules implements hema.web.validation.contr
         return false;
     }
 
-    /**
-     * @param rule String
-     * @return boolean
-     */
-    private boolean dependsOnOtherFields(String rule) {
-
-        for (String value : dependentRules) {
-            if (rule.equals(value)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     public Map<String, Object> validated() throws ValidationException {
         return null;
@@ -153,7 +138,7 @@ final class Validator extends ValidateRules implements hema.web.validation.contr
             return getSizeMessage(attributeWithPlaceholders, rule);
         }
 
-        String translatorKey = String.format("validation.%s", lowerRule);
+        String translatorKey = STR."validation.\{lowerRule}";
 
         if (!translatorKey.equals(translator.get(translatorKey))) {
             return translator.get(translatorKey);

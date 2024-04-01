@@ -14,10 +14,10 @@ import java.util.HashMap;
 @Configuration
 public class TranslationConfiguration {
 
-    private final ApplicationContext applicationContext;
+    private final ApplicationContext context;
 
-    public TranslationConfiguration(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public TranslationConfiguration(ApplicationContext context) {
+        this.context = context;
     }
 
     @Bean
@@ -30,7 +30,7 @@ public class TranslationConfiguration {
     @Lazy
     public Loader loader() {
         return new FileLoader(
-                applicationContext.getBean(FileSystemResourceLoader.class),
+                context.getBean(FileSystemResourceLoader.class),
                 new String[]{STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang"}
         );
     }

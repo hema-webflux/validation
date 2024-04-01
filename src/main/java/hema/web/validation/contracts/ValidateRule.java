@@ -120,7 +120,8 @@ public interface ValidateRule {
 
     ValidateRule decimal(@NonNull int min, @NonNull int max);
 
-    <T> ValidateRule tryEnum(@NonNull Class<T> enumClass);
+    <T> ValidateRule creationEnum(@NonNull Class<T> kind);
 
     Map<String, Object[]> rules();
+
 }
