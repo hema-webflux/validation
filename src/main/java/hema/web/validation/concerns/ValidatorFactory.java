@@ -8,20 +8,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
 
     private final Map<String, String> fallbackMessages;
 
-    private final Map<String, Factory.CustomValidateRulePredicate> extensions;
+    private Map<String, Factory.CustomValidateRulePredicate> extensions = null;
 
     private ApplicationContext context;
 
-    ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages, Map<String, Factory.CustomValidateRulePredicate> extensions) {
+    public ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages) {
         this.context = context;
         this.fallbackMessages = fallbackMessages;
-        this.extensions = extensions;
     }
 
     @Override
@@ -45,6 +46,11 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
 
     @Override
     public void extend(String rule, Factory.CustomValidateRulePredicate closure, String message) {
+
+        if (Objects.isNull(extensions)) {
+            extensions = new HashMap<>();
+        }
+
         extensions.put(rule, closure);
         fallbackMessages.put(rule, message);
     }
