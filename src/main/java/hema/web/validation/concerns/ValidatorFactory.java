@@ -31,7 +31,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
             Haystack<Object> messages,
             Haystack<String> attributes
     ) {
-        return new Validator(
+        return new ValidatorBean(
                 context,
                 data,
                 validateRule.rules(),

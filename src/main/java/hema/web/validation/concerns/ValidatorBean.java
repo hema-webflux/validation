@@ -3,6 +3,7 @@ package hema.web.validation.concerns;
 import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.MessageBag;
+import hema.web.validation.contracts.Validator;
 import hema.web.validation.contracts.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
-final class Validator extends ValidateRules implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
+final class ValidatorBean extends ValidateRules implements Validator, ValidateAttributes, FormatsMessages {
 
     private final ApplicationContext context;
 
@@ -34,7 +35,7 @@ final class Validator extends ValidateRules implements hema.web.validation.contr
 
     private final Inflector inflector;
 
-    Validator(
+    ValidatorBean(
             ApplicationContext context, Map<String, Object> data, Map<String, Object[]> rules,
             Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage,
             Inflector inflector, Translation translator
