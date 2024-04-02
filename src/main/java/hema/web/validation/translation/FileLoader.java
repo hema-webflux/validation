@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
- class FileLoader implements Loader {
+class FileLoader implements Loader {
 
     private final ResourceLoader resourceLoader;
 
@@ -44,7 +45,7 @@ import java.util.Map;
 
     private Map<String, Object> handleLoadJsonPaths(String path, String locale, Map<String, Object> output) {
 
-        String full = String.format("%s/%s.json", path, locale);
+        String full = STR."\{path}/\{locale}.json";
 
         Resource resource = resourceLoader.getResource(full);
 
@@ -56,7 +57,7 @@ import java.util.Map;
                 output = jsonMapper.readValue(resource.getURL(), new TypeReference<>() {
                 });
 
-                if (output == null) {
+                if (Objects.isNull(output)) {
                     throw new RuntimeException(String.format("Translation file [%s] contains an invalid JSON structure.", full));
                 }
 
