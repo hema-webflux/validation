@@ -1,7 +1,6 @@
 package hema.web.validation.concerns;
 
 import hema.web.contracts.http.HttpException;
-import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.exception.InvalidArgumentException;
 import org.json.JSONException;
 import org.json.JSONObject;

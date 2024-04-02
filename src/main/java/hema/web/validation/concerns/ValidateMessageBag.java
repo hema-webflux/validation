@@ -6,9 +6,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.*;
 
-public class ValidateMessageBag implements MessageBag {
-
-    private final Map<String, Set<String>> messages = new HashMap<>();
+record ValidateMessageBag(Map<String, Set<String>> messages) implements MessageBag {
 
     @Override
     public boolean has(@Nullable String key) {
@@ -79,11 +77,6 @@ public class ValidateMessageBag implements MessageBag {
 
     private boolean isUnique(String key, String message) {
         return !messages.containsKey(key) || !messages.get(key).contains(message);
-    }
-
-    @Override
-    public Map<String, Set<String>> messages() {
-        return messages;
     }
 
     @Override

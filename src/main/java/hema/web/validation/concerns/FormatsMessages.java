@@ -21,7 +21,7 @@ public interface FormatsMessages {
      */
     default String getFromLocalArray(String attribute, String lowerRule, Haystack<Object> haystack) {
 
-        String[] searches = {String.format("%s.%s", attribute, lowerRule), lowerRule, attribute};
+        String[] searches = {STR."\{attribute}.\{lowerRule}", lowerRule, attribute};
 
         for (String search : searches) {
 

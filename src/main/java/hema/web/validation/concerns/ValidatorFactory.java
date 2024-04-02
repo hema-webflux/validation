@@ -18,7 +18,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
 
     private ApplicationContext context;
 
-    public ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages, Map<String, Factory.CustomValidateRulePredicate> extensions) {
+    ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages, Map<String, Factory.CustomValidateRulePredicate> extensions) {
         this.context = context;
         this.fallbackMessages = fallbackMessages;
         this.extensions = extensions;
@@ -32,6 +32,7 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
             Haystack<String> attributes
     ) {
         return new Validator(
+                context,
                 data,
                 validateRule.rules(),
                 messages,

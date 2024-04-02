@@ -1,9 +1,10 @@
-package hema.web.validation.contracts;
+package hema.web.validation;
 
+import hema.web.validation.contracts.Validator;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 
-public interface ValidatesWhenResolved {
+interface ValidatesWhenResolved {
     default void failedAuthorization() throws UnauthorizedException {
         throw new UnauthorizedException(401, "This action is unauthorized.");
     }

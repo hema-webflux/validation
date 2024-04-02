@@ -6,12 +6,15 @@ import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.contracts.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
 final class Validator extends ValidateRules implements hema.web.validation.contracts.Validator, ValidateAttributes, FormatsMessages {
+
+    private final ApplicationContext context;
 
     private final Map<String, Object> data;
 
@@ -31,11 +34,15 @@ final class Validator extends ValidateRules implements hema.web.validation.contr
 
     private final Inflector inflector;
 
-    Validator(Map<String, Object> data, Map<String, Object[]> rules,
-              Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage, Inflector inflector, Translation translator) {
+    Validator(
+            ApplicationContext context, Map<String, Object> data, Map<String, Object[]> rules,
+            Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage,
+            Inflector inflector, Translation translator
+    ) {
 
         this.dotPlaceholder = Str.random(16);
 
+        this.context = context;
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
@@ -99,7 +106,7 @@ final class Validator extends ValidateRules implements hema.web.validation.contr
     }
 
     public boolean passes() {
-        messageBag = new ValidateMessageBag();
+        messageBag = context.getBean(MessageBag.class);
 
         return messageBag.isEmpty();
     }

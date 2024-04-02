@@ -1,6 +1,7 @@
 package hema.web.validation.concerns;
 
 import hema.web.validation.contracts.Factory;
+import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.translation.TranslationConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -13,16 +14,16 @@ import java.util.HashMap;
 @Import({TranslationConfiguration.class})
 public class ValidatorConfiguration {
 
-    private final ApplicationContext applicationContext;
+    private final ApplicationContext context;
 
-    public ValidatorConfiguration(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public ValidatorConfiguration(ApplicationContext context) {
+        this.context = context;
     }
 
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(applicationContext, new HashMap<>(), new HashMap<>());
+        return new ValidatorFactory(context, new HashMap<>(), new HashMap<>());
     }
 
     @Bean
@@ -36,4 +37,10 @@ public class ValidatorConfiguration {
         );
     }
 
+    @Bean
+    @Lazy
+    @Scope("prototype")
+    public MessageBag messageBag() {
+        return new ValidateMessageBag(new HashMap<>());
+    }
 }
