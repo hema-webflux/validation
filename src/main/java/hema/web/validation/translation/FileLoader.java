@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileLoader implements Loader {
+ class FileLoader implements Loader {
 
     private final ResourceLoader resourceLoader;
 

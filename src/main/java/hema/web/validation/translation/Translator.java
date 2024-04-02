@@ -5,7 +5,7 @@ import hema.web.validation.contracts.translation.Translation;
 
 import java.util.Map;
 
-public class Translator extends NamespacedItemResolver implements Translation {
+class Translator extends NamespacedItemResolver implements Translation {
 
     private final Loader loader;
 

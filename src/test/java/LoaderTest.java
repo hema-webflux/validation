@@ -1,9 +1,9 @@
 import hema.web.validation.contracts.translation.Loader;
-import hema.web.validation.translation.FileLoader;
+import hema.web.validation.translation.TranslationConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.Map;
 
@@ -14,9 +14,7 @@ public class LoaderTest {
     @BeforeAll
     public static void beforeMakeLoader() {
 
-        loader = new FileLoader(new FileSystemResourceLoader(), new String[]{
-                "classpath:lang"
-        });
+        loader = new TranslationConfiguration(new GenericApplicationContext()).loader();
     }
 
     @Test
