@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public abstract class FormValidator implements ValidatesWhenResolved {
+public abstract class RequestValidator implements ValidatesWhenResolved {
 
     private Validator validator = null;
 

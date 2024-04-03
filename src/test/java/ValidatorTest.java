@@ -1,9 +1,9 @@
-import hema.web.validation.FormValidator;
+import hema.web.validation.RequestValidator;
 import hema.web.validation.concerns.haystack.AttributeHaystack;
 import hema.web.validation.concerns.haystack.MessageHaystack;
 import hema.web.validation.contracts.ValidateRule;
 
-public class ValidatorTest extends FormValidator {
+public class ValidatorTest extends RequestValidator {
 
     @Override
     protected void rules(ValidateRule rule) {

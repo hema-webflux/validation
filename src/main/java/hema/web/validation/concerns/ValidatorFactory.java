@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.lang.NonNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
@@ -43,17 +44,21 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public void extend(@NonNull  String rule, Factory.CustomValidateRulePredicate closure, @NonNull String message) {
+    public void extend(@NonNull String rule, Factory.CustomValidateRulePredicate closure, @NonNull String message) {
         extensions.put(rule, closure);
         fallbackMessages.put(rule, message);
     }
 
     @Override
+    public void before() {
+        this.setExtensions(new HashMap<>());
+        this.setFallbackMessages(new HashMap<>());
+    }
+
     public void setFallbackMessages(Map<String, String> fallbackMessages) {
         this.fallbackMessages = fallbackMessages;
     }
 
-    @Override
     public void setExtensions(Map<String, CustomValidateRulePredicate> extensions) {
         this.extensions = extensions;
     }

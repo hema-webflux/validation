@@ -20,9 +20,7 @@ public interface Factory {
 
     void extend(@NonNull String rule, CustomValidateRulePredicate closure, @NonNull String message);
 
-    void setFallbackMessages(Map<String, String> fallbackMessages);
-
-    void setExtensions(Map<String, CustomValidateRulePredicate> extensions);
+    void before();
 
     @FunctionalInterface
     interface CustomValidateRulePredicate {
