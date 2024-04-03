@@ -23,7 +23,7 @@ public class ValidatorConfiguration {
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(context, new HashMap<>());
+        return new ValidatorFactory(context);
     }
 
     @Bean

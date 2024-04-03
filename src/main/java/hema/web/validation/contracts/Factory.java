@@ -1,6 +1,7 @@
 package hema.web.validation.contracts;
 
 import hema.web.validation.concerns.haystack.Haystack;
+import org.springframework.lang.NonNull;
 
 import java.util.Map;
 
@@ -17,7 +18,11 @@ public interface Factory {
      */
     Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<Object> messages, Haystack<String> attributes);
 
-    void extend(String rule, CustomValidateRulePredicate closure, String message);
+    void extend(@NonNull String rule, CustomValidateRulePredicate closure, @NonNull String message);
+
+    void setFallbackMessages(Map<String, String> fallbackMessages);
+
+    void setExtensions(Map<String, CustomValidateRulePredicate> extensions);
 
     @FunctionalInterface
     interface CustomValidateRulePredicate {

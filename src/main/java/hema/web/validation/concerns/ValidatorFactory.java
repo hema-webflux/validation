@@ -7,22 +7,20 @@ import hema.web.validation.contracts.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
 
-    private final Map<String, String> fallbackMessages;
+    private Map<String, String> fallbackMessages = null;
 
     private Map<String, Factory.CustomValidateRulePredicate> extensions = null;
 
     private ApplicationContext context;
 
-    public ValidatorFactory(ApplicationContext context, Map<String, String> fallbackMessages) {
+    public ValidatorFactory(ApplicationContext context) {
         this.context = context;
-        this.fallbackMessages = fallbackMessages;
     }
 
     @Override
@@ -45,14 +43,19 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public void extend(String rule, Factory.CustomValidateRulePredicate closure, String message) {
-
-        if (Objects.isNull(extensions)) {
-            extensions = new HashMap<>();
-        }
-
+    public void extend(@NonNull  String rule, Factory.CustomValidateRulePredicate closure, @NonNull String message) {
         extensions.put(rule, closure);
         fallbackMessages.put(rule, message);
+    }
+
+    @Override
+    public void setFallbackMessages(Map<String, String> fallbackMessages) {
+        this.fallbackMessages = fallbackMessages;
+    }
+
+    @Override
+    public void setExtensions(Map<String, CustomValidateRulePredicate> extensions) {
+        this.extensions = extensions;
     }
 
     @Override
