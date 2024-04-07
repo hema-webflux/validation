@@ -18,15 +18,15 @@ public class ValidatorTest extends RequestValidator {
     }
 
     @Override
-    protected AttributeHaystack attributes(AttributeHaystack haystacks) {
-        return haystacks.add("name", "用户名")
+    protected void attributes(AttributeHaystack haystacks) {
+        haystacks.add("name", "用户名")
                 .add("email", "邮箱")
                 .add("phone", "手机号");
     }
 
     @Override
-    protected MessageHaystack messages(MessageHaystack haystacks) {
-        return haystacks.add("name*", closure -> (
+    protected void messages(MessageHaystack haystacks) {
+        haystacks.add("name*", closure -> (
                         closure.add("required", "xxx")
                                 .add("string", "xxx")
                 ))

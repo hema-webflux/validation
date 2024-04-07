@@ -57,20 +57,18 @@ public abstract class RequestValidator implements ValidatesWhenResolved {
      * Get custom messages for validator errors.
      *
      * @param haystacks Haystack
-     * @return Haystack
      */
-    protected MessageHaystack messages(MessageHaystack haystacks) {
-        return (MessageHaystack) haystacks.setNullable(true);
+    protected void messages(MessageHaystack haystacks) {
+
     }
 
     /**
      * Get custom attributes for validator errors.
      *
      * @param haystacks Haystack
-     * @return Haystack
      */
-    protected AttributeHaystack attributes(AttributeHaystack haystacks) {
-        return (AttributeHaystack) haystacks.setNullable(true);
+    protected void attributes(AttributeHaystack haystacks) {
+
     }
 
     final protected Validator getValidatorInstance() {
@@ -91,19 +89,18 @@ public abstract class RequestValidator implements ValidatesWhenResolved {
 
         this.rules(validateRule);
 
-        return factory.make(
-                validationData(),
-                validateRule,
-                messages(new MessageHaystack(new HashMap<>(), new HashSet<>())),
-                attributes(new AttributeHaystack(new HashMap<>()))
-        );
+        MessageHaystack   messages   = new MessageHaystack(new HashMap<>(), new HashSet<>());
+
+        AttributeHaystack attributes = new AttributeHaystack(new HashMap<>());
+
+        return factory.make(validationData(), validateRule, messages, attributes);
     }
 
     private Map<String, Object> validationData() {
         return new HashMap<>();
     }
 
-    private void setValidator(Validator validator) {
+    public void setValidator(Validator validator) {
         this.validator = validator;
     }
 }
