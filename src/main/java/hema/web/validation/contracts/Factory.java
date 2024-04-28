@@ -20,8 +20,6 @@ public interface Factory {
 
     void extend(@NonNull String rule, CustomValidateRulePredicate closure, @NonNull String message);
 
-    void before();
-
     @FunctionalInterface
     interface CustomValidateRulePredicate {
         boolean validate(String attribute, Object value, Map<String, Object> parameters);

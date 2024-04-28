@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public abstract class RequestValidator implements ValidatesWhenResolved {
+public abstract class RequestValidator implements ValidatesWhenResolved, ValidatorAwareRule {
 
     private Validator validator = null;
 
@@ -68,17 +68,19 @@ public abstract class RequestValidator implements ValidatesWhenResolved {
      * @param haystacks Haystack
      */
     protected void attributes(AttributeHaystack haystacks) {
-
     }
 
     final protected Validator getValidatorInstance() {
+
         if (validator != null) {
             return validator;
         }
 
-        Validator validator = createDefaultValidator(container.getBean(Factory.class));
+        Factory factory = container.getBean(Factory.class);
 
-        setValidator(validator);
+        Validator validator = createDefaultValidator(factory);
+
+        this.setValidator(validator);
 
         return validator;
     }
@@ -89,11 +91,12 @@ public abstract class RequestValidator implements ValidatesWhenResolved {
 
         this.rules(validateRule);
 
-        MessageHaystack   messages   = new MessageHaystack(new HashMap<>(), new HashSet<>());
-
-        AttributeHaystack attributes = new AttributeHaystack(new HashMap<>());
-
-        return factory.make(validationData(), validateRule, messages, attributes);
+        return factory.make(
+                validationData(),
+                validateRule,
+                new MessageHaystack(new HashMap<>(), new HashSet<>()),
+                new AttributeHaystack(new HashMap<>())
+        );
     }
 
     private Map<String, Object> validationData() {

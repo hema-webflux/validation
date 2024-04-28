@@ -2,7 +2,6 @@ package hema.web.validation.translation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hema.web.validation.contracts.translation.Loader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -12,20 +11,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-class FileLoader implements Loader {
+final class FileLoader implements Loader {
 
     private final ResourceLoader resourceLoader;
 
     private final String[] path;
 
     public FileLoader(ResourceLoader resourceLoader, String[] path) {
-        this.resourceLoader = resourceLoader;
         this.path = path;
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
     public Map<String, Object> load(String locale) {
         return loadJsonPaths(locale);
+    }
+
+    private Map<String,Object> loadPaths(){
+        Map<String,Object> map = new HashMap<>();
+
+
     }
 
     /**
@@ -50,24 +55,32 @@ class FileLoader implements Loader {
         Resource resource = resourceLoader.getResource(full);
 
         if (resource.exists() && resource.isFile()) {
-
-            ObjectMapper jsonMapper = new ObjectMapper();
-
-            try {
-                output = jsonMapper.readValue(resource.getURL(), new TypeReference<>() {
-                });
-
-                if (Objects.isNull(output)) {
-                    throw new RuntimeException(String.format("Translation file [%s] contains an invalid JSON structure.", full));
-                }
-
-                return output;
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-
+            return tryResolve(full, resource, output);
         }
 
         return output;
+    }
+
+    private Map<String, Object> tryResolve(String full, Resource resource, Map<String, Object> output) {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            output = mapper.readValue(resource.getURL(), new TypeReference<>() {
+            });
+
+            if (Objects.isNull(output)) {
+                fail(String.format("Translation file [%s] contains an invalid JSON structure.", full));
+            }
+
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+
+        return output;
+    }
+
+    private void fail(String message) {
+        throw new RuntimeException(message);
     }
 }

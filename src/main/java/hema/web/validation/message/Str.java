@@ -72,16 +72,19 @@ public class Str {
 
         String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-        Random random = new Random();
-
         StringBuilder buffer = new StringBuilder();
 
+        appendRandomChar(buffer, chars, length);
+
+        return buffer.toString();
+    }
+
+    protected static void appendRandomChar(StringBuilder buffer, String chars, int length) {
+        Random random = new Random();
         for (int i = 0; i < length; i++) {
             int number = random.nextInt(62);
             buffer.append(chars.charAt(number));
         }
-
-        return buffer.toString();
     }
 
     public static String ucFirst(String value) {
@@ -89,16 +92,17 @@ public class Str {
     }
 
     public static String implode(String separator, String[] array) {
-
         StringBuilder builder = new StringBuilder();
+        append(builder, separator, array);
+        return builder.toString();
+    }
 
+    protected static void append(StringBuilder builder, String separator, String[] array) {
         for (int i = 0; i < array.length; i++) {
             builder.append(array[i]);
             if (i != array.length - 1) {
                 builder.append(separator);
             }
         }
-
-        return builder.toString();
     }
 }

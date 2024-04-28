@@ -1,4 +1,4 @@
-package hema.web.validation.contracts.translation;
+package hema.web.validation.translation;
 
 import org.springframework.lang.Nullable;
 

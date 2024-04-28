@@ -3,13 +3,12 @@ package hema.web.validation.concerns;
 import hema.web.inflector.Inflector;
 import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.*;
-import hema.web.validation.contracts.translation.Translation;
+import hema.web.validation.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.lang.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
@@ -47,12 +46,6 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     public void extend(@NonNull String rule, Factory.CustomValidateRulePredicate closure, @NonNull String message) {
         extensions.put(rule, closure);
         fallbackMessages.put(rule, message);
-    }
-
-    @Override
-    public void before() {
-        this.setExtensions(new HashMap<>());
-        this.setFallbackMessages(new HashMap<>());
     }
 
     public void setFallbackMessages(Map<String, String> fallbackMessages) {

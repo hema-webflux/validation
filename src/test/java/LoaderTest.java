@@ -1,4 +1,4 @@
-import hema.web.validation.contracts.translation.Loader;
+import hema.web.validation.translation.Loader;
 import hema.web.validation.translation.TranslationConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

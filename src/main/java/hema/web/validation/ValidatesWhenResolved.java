@@ -5,6 +5,7 @@ import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 
 interface ValidatesWhenResolved {
+
     default void failedAuthorization() throws UnauthorizedException {
         throw new UnauthorizedException(401, "This action is unauthorized.");
     }

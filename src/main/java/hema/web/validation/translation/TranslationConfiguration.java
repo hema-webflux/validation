@@ -1,7 +1,5 @@
 package hema.web.validation.translation;
 
-import hema.web.validation.contracts.translation.Loader;
-import hema.web.validation.contracts.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +29,10 @@ public class TranslationConfiguration {
     public Loader loader() {
         return new FileLoader(
                 context.getBean(FileSystemResourceLoader.class),
-                new String[]{STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang"}
+                new String[]{
+                        STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang",
+
+                }
         );
     }
 

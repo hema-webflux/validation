@@ -11,8 +11,8 @@ public class ValidateRuleTest {
 
     @Test
     public void testValidateRuleRulesIsNotEmpty() {
-        validateRule.make("name").required().string().exists("users","name")
-                .make("email").required().string().email().unique("users","email");
+        validateRule.field("name").required().string().exists("users","name")
+                .field("email").required().string().email().unique("users","email");
 
         assertFalse(validateRule.rules().isEmpty());
     }

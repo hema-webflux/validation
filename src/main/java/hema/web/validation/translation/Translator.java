@@ -1,8 +1,5 @@
 package hema.web.validation.translation;
 
-import hema.web.validation.contracts.translation.Loader;
-import hema.web.validation.contracts.translation.Translation;
-
 import java.util.Map;
 
 class Translator extends NamespacedItemResolver implements Translation {
