@@ -13,21 +13,21 @@ import java.util.Objects;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
 
-    private Map<String, String> fallbackMessages = null;
+    private Resolver resolver = null;
+
+    private ApplicationContext application;
+
+    private final Translation translation;
 
     private Map<String, String> replacers = null;
+
+    private Map<String, String> fallbackMessages = null;
 
     private Map<String, Validator.ValidateRulePredicate> extensions = null;
 
     private Map<String, Validator.ValidateRulePredicate> implicitExtensions = null;
 
     private Map<String, Validator.ValidateRulePredicate> dependents = null;
-
-    private Resolver resolver = null;
-
-    private ApplicationContext application;
-
-    private final Translation translation;
 
     public ValidatorFactory(ApplicationContext application, Translation translation) {
         this.application = application;
