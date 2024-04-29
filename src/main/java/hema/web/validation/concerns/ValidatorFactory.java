@@ -7,57 +7,100 @@ import hema.web.validation.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.lang.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 
 final class ValidatorFactory implements Factory, ApplicationListener<ContextRefreshedEvent> {
 
     private Map<String, String> fallbackMessages = null;
 
-    private Map<String, Factory.CustomValidateRulePredicate> extensions = null;
+    private Map<String, String> replacers = null;
 
-    private ApplicationContext context;
+    private Map<String, Validator.ValidateRulePredicate> extensions = null;
 
-    public ValidatorFactory(ApplicationContext context) {
-        this.context = context;
+    private Map<String, Validator.ValidateRulePredicate> implicitExtensions = null;
+
+    private Map<String, Validator.ValidateRulePredicate> dependents = null;
+
+    private Resolver resolver = null;
+
+    private ApplicationContext application;
+
+    private final Translation translation;
+
+    public ValidatorFactory(ApplicationContext application, Translation translation) {
+        this.application = application;
+        this.translation = translation;
     }
 
     @Override
-    public hema.web.validation.contracts.Validator make(
-            Map<String, Object> data,
-            ValidateRule validateRule,
-            Haystack<Object> messages,
-            Haystack<String> attributes
-    ) {
-        return new ValidatorBean(
-                context,
-                data,
-                validateRule.rules(),
-                messages,
-                attributes,
-                attributes,
-                context.getBean(Inflector.class),
-                context.getBean(Translation.class)
-        );
+    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule,
+                                                        Haystack<Object> messages, Haystack<String> attributes) {
+
+        ValidatorBean validator = (ValidatorBean) resolve(data, validateRule, messages, attributes);
+
+        validator.setApplication(this.application);
+
+        addExtensions(validator);
+
+        return validator;
     }
 
     @Override
-    public void extend(@NonNull String rule, Factory.CustomValidateRulePredicate closure, @NonNull String message) {
+    public void extend(String rule, Validator.ValidateRulePredicate closure, String message) {
         extensions.put(rule, closure);
-        fallbackMessages.put(rule, message);
+        if (Objects.nonNull(message)) {
+            fallbackMessages.put(rule, message);
+        }
     }
 
-    public void setFallbackMessages(Map<String, String> fallbackMessages) {
-        this.fallbackMessages = fallbackMessages;
+    @Override
+    public void extendImplicit(String rule, Validator.ValidateRulePredicate closure, String message) {
+        implicitExtensions.put(rule, closure);
+        if (Objects.nonNull(message)) {
+            fallbackMessages.put(rule, message);
+        }
     }
 
-    public void setExtensions(Map<String, CustomValidateRulePredicate> extensions) {
-        this.extensions = extensions;
+    @Override
+    public void extendDependent(String rule, Validator.ValidateRulePredicate closure, String message) {
+        dependents.put(rule, closure);
+        if (Objects.nonNull(message)) {
+            fallbackMessages.put(rule, message);
+        }
+    }
+
+    private void addExtensions(ValidatorBean validator) {
+
+        validator.addExtensions(extensions);
+
+        validator.addImplicitExtensions(implicitExtensions);
+
+        validator.addDependentExtensions(dependents);
+
+        validator.addReplacers(replacers);
+
+        validator.setFallbackMessage(fallbackMessages);
+    }
+
+    private Validator resolve(Map<String, Object> data, ValidateRule rule, Haystack<Object> messages, Haystack<String> attributes) {
+
+        Inflector inflector = application.getBean(Inflector.class);
+
+        if (Objects.isNull(resolver)) {
+            return new ValidatorBean(translation, inflector, data, rule.rules(), messages, attributes);
+        }
+
+        return resolver.apply(translation, inflector, data, rule, messages, attributes);
+    }
+
+    public void resolver(Resolver resolver) {
+        this.resolver = resolver;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        this.context = event.getApplicationContext();
+        this.application = event.getApplicationContext();
     }
 }

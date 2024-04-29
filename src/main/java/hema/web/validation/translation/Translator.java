@@ -15,7 +15,7 @@ class Translator extends NamespacedItemResolver implements Translation {
     }
 
     @Override
-    public String get(String key, Map<String, Object> replace, String locale) {
+    public String get(String key, String locale) {
         return null;
     }
 

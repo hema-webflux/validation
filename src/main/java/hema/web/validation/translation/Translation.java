@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface Translation {
 
-    String get(String key, Map<String, Object> replace, @Nullable String locale);
+    String get(String key, @Nullable String locale);
 
     String choice(String key);
 

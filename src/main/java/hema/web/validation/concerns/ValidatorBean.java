@@ -10,12 +10,27 @@ import hema.web.validation.message.Str;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 final class ValidatorBean extends ValidateRules implements Validator, ValidateAttributes, FormatsMessages {
 
-    private final ApplicationContext context;
+    private ApplicationContext app;
+
+    private final Translation translator;
+
+    private final Inflector inflector;
+
+    private Map<String, String> fallbackMessage;
+
+    private Map<String, String> replacers;
+
+    private Map<String, Validator.ValidateRulePredicate> extensions;
+
+    private List<String> implicitRules;
+
+    private List<String> dependentRules;
 
     private final Map<String, Object> data;
 
@@ -25,33 +40,21 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
     private final Map<String, Object[]> initialRules;
 
-    private final Haystack<String> fallbackMessage;
-
-    private final Translation translator;
-
     private final String dotPlaceholder;
 
     private MessageBag messageBag = null;
 
-    private final Inflector inflector;
-
-    ValidatorBean(
-            ApplicationContext context, Map<String, Object> data, Map<String, Object[]> rules,
-            Haystack<Object> messages, Haystack<String> attributes, Haystack<String> fallbackMessage,
-            Inflector inflector, Translation translator
-    ) {
+    ValidatorBean(Translation translator, Inflector inflector, Map<String, Object> data, Map<String, Object[]> rules,
+                  Haystack<Object> messages, Haystack<String> attributes) {
 
         this.dotPlaceholder = Str.random(16);
 
-        this.context = context;
+        this.translator = translator;
+        this.inflector = inflector;
         this.data = data;
         this.initialRules = rules;
         this.messages = messages;
         this.attributes = attributes;
-        this.translator = translator;
-        this.fallbackMessage = fallbackMessage;
-
-        this.inflector = inflector;
     }
 
     private void validateAttribute(String attribute, Object[] parameters) {
@@ -107,7 +110,7 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     }
 
     public boolean passes() {
-        messageBag = context.getBean(MessageBag.class);
+        messageBag = app.getBean(MessageBag.class);
 
         return messageBag.isEmpty();
     }
@@ -148,8 +151,8 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
         String translatorKey = STR."validation.\{lowerRule}";
 
-        if (!translatorKey.equals(translator.get(translatorKey))) {
-            return translator.get(translatorKey);
+        if (!translatorKey.equals(translator.get(translatorKey, "en"))) {
+            return translator.get(translatorKey, "en");
         }
 
         String message = getFromLocalArray(attribute, lowerRule, fallbackMessage);
@@ -163,11 +166,11 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
         String translatorKey = STR."validation.\{lowerRule}.\{getAttributeType(attribute)}";
 
-        return translator.get(translatorKey);
+        return translator.get(translatorKey, "en");
     }
 
     private String getCustomMessageFromTranslator(String[] keys) {
-
+        return "";
     }
 
     private String getAttributeType(String attribute) {
@@ -196,5 +199,37 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
         attribute = replacePlaceholderInString(attribute);
 
 
+    }
+
+    void setFallbackMessage(Map<String, String> fallbackMessage) {
+        this.fallbackMessage = fallbackMessage;
+    }
+
+    void setApplication(ApplicationContext application) {
+        this.app = application;
+    }
+
+    void addImplicitExtensions(Map<String, Validator.ValidateRulePredicate> implicitRules) {
+
+        addExtensions(implicitRules);
+
+        this.implicitRules.addAll(implicitRules.keySet());
+    }
+
+    void addDependentExtensions(Map<String, Validator.ValidateRulePredicate> dependentRules) {
+        addExtensions(dependentRules);
+        this.dependentRules.addAll(dependentRules.keySet());
+    }
+
+    void addExtensions(Map<String, Validator.ValidateRulePredicate> extensions) {
+        if (Objects.nonNull(extensions)) {
+            this.extensions.putAll(extensions);
+        }
+    }
+
+    void addReplacers(Map<String, String> replacers) {
+        if (Objects.nonNull(replacers)) {
+            this.replacers.putAll(replacers);
+        }
     }
 }

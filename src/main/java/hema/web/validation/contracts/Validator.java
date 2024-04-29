@@ -16,4 +16,8 @@ public interface Validator {
 
     MessageBag errors();
 
+    @FunctionalInterface
+    interface ValidateRulePredicate {
+        boolean validate(String attribute, Object value, Map<String, Object> parameters);
+    }
 }

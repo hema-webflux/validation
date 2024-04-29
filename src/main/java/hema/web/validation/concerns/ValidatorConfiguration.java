@@ -3,6 +3,7 @@ package hema.web.validation.concerns;
 import hema.web.validation.contracts.Factory;
 import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.translation.Translation;
 import hema.web.validation.translation.TranslationConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
@@ -23,7 +24,7 @@ public class ValidatorConfiguration {
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(context);
+        return new ValidatorFactory(context, context.getBean(Translation.class));
     }
 
     @Bean
