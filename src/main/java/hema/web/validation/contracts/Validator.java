@@ -16,8 +16,15 @@ public interface Validator {
 
     MessageBag errors();
 
+    void after(ValidateHookConsumer consumer);
+
     @FunctionalInterface
     interface ValidateRulePredicate {
         boolean validate(String attribute, Object value, Map<String, Object> parameters);
+    }
+
+    @FunctionalInterface
+    interface ValidateHookConsumer {
+        void accept(Validator validator);
     }
 }

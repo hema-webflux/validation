@@ -9,14 +9,11 @@ import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 final class ValidatorBean extends ValidateRules implements Validator, ValidateAttributes, FormatsMessages {
 
-    private ApplicationContext app;
+    private ApplicationContext applicationContext;
 
     private final Translation translator;
 
@@ -28,10 +25,6 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
     private Map<String, Validator.ValidateRulePredicate> extensions;
 
-    private List<String> implicitRules;
-
-    private List<String> dependentRules;
-
     private final Map<String, Object> data;
 
     private final Haystack<Object> messages;
@@ -39,6 +32,8 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     private final Haystack<String> attributes;
 
     private final Map<String, Object[]> initialRules;
+
+    private Set<ValidateHookConsumer> after;
 
     private final String dotPlaceholder;
 
@@ -63,7 +58,7 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
             return;
         }
 
-        if (dependsOnOtherFields((String) parameters[0])) {
+        if (dependentRules.contains((String) parameters[0])) {
 
         }
 
@@ -81,7 +76,28 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
     private boolean isValidatable(String rule, String attribute, Object value) {
 
+        if (hasRule(rule, excludeRules)) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Determine if the field is present, or the rule implies required.
+     *
+     * @param rule      Validate rule.
+     * @param attribute Field.
+     * @param value     Input value.
+     * @return Boolean
+     */
+    private boolean presentOrRuleIsImplicit(String rule, String attribute, Object value) {
+
+        if (validateString(value) && ((String) value).isBlank()) {
+            return isImplicit(rule);
+        }
+
+        return validatePresent(attribute) || isImplicit(rule);
     }
 
     @Override
@@ -109,8 +125,20 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
         return messageBag;
     }
 
+    @Override
+    public void after(ValidateHookConsumer consumer) {
+
+        if (Objects.isNull(this.after)) {
+            this.after = new HashSet<>();
+        }
+
+        consumer.accept(this);
+
+        this.after.add(consumer);
+    }
+
     public boolean passes() {
-        messageBag = app.getBean(MessageBag.class);
+        messageBag = applicationContext.getBean(MessageBag.class);
 
         return messageBag.isEmpty();
     }
@@ -119,6 +147,11 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     @SuppressWarnings("unchecked")
     public <T> T getValue(String attribute) {
         return (T) data.get(attribute);
+    }
+
+    @Override
+    public boolean validatePresent(String attribute) {
+        return data.containsKey(attribute);
     }
 
     public String getMessage(String attribute, String rule) {
@@ -206,13 +239,11 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     }
 
     void setApplication(ApplicationContext application) {
-        this.app = application;
+        this.applicationContext = application;
     }
 
     void addImplicitExtensions(Map<String, Validator.ValidateRulePredicate> implicitRules) {
-
         addExtensions(implicitRules);
-
         this.implicitRules.addAll(implicitRules.keySet());
     }
 

@@ -542,4 +542,6 @@ interface ValidateAttributes {
     default <T> boolean validateTryEnum(T value, Class<T> type) {
         return type.isInstance(value);
     }
+
+    boolean validatePresent(String attribute);
 }

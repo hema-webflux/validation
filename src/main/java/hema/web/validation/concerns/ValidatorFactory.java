@@ -47,6 +47,19 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
         return validator;
     }
 
+    private void addExtensions(ValidatorBean validator) {
+
+        validator.addExtensions(extensions);
+
+        validator.addImplicitExtensions(implicitExtensions);
+
+        validator.addDependentExtensions(dependents);
+
+        validator.addReplacers(replacers);
+
+        validator.setFallbackMessage(fallbackMessages);
+    }
+
     @Override
     public void extend(String rule, Validator.ValidateRulePredicate closure, String message) {
         extensions.put(rule, closure);
@@ -69,19 +82,6 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
         if (Objects.nonNull(message)) {
             fallbackMessages.put(rule, message);
         }
-    }
-
-    private void addExtensions(ValidatorBean validator) {
-
-        validator.addExtensions(extensions);
-
-        validator.addImplicitExtensions(implicitExtensions);
-
-        validator.addDependentExtensions(dependents);
-
-        validator.addReplacers(replacers);
-
-        validator.setFallbackMessage(fallbackMessages);
     }
 
     private Validator resolve(Map<String, Object> data, ValidateRule rule, Haystack<Object> messages, Haystack<String> attributes) {
