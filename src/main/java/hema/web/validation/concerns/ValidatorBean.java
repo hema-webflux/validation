@@ -234,6 +234,12 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
     }
 
+    private String[] getRules(String attribute,String[] rules) {
+
+
+
+    }
+
     void setFallbackMessage(Map<String, String> fallbackMessage) {
         this.fallbackMessage = fallbackMessage;
     }
