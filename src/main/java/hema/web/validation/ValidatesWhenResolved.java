@@ -1,6 +1,6 @@
 package hema.web.validation;
 
-import hema.web.validation.contracts.Validator;
+import hema.web.validation.concerns.Validator;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 

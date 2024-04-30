@@ -1,5 +1,6 @@
-package hema.web.validation.contracts;
+package hema.web.validation.concerns;
 
+import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.exception.ValidationException;
 
 import java.util.Map;
@@ -17,6 +18,14 @@ public interface Validator {
     MessageBag errors();
 
     void after(ValidateHookConsumer consumer);
+
+    /**
+     * Instruct the validator to stop validating after the first rule failure.
+     *
+     * @param stopOnFirstFailure boolean
+     * @return Validator instance.
+     */
+    Validator stopOnFirstFailure(boolean stopOnFirstFailure);
 
     @FunctionalInterface
     interface ValidateRulePredicate {

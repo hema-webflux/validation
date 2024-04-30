@@ -1,6 +1,6 @@
 import hema.web.validation.RequestValidator;
 import hema.web.validation.Attribute;
-import hema.web.validation.concerns.haystack.Message;
+import hema.web.validation.Message;
 import hema.web.validation.contracts.ValidateRule;
 
 public class ValidatorTest extends RequestValidator {
@@ -27,14 +27,12 @@ public class ValidatorTest extends RequestValidator {
 
     @Override
     protected Message messages() {
-        return Message.make()
-                .add("name*", closure -> (
-                        closure.add("required", "xxx")
-                                .add("string", "xxx")
-                ))
-                .add("email*", closure -> (
-                        closure.add("email", "format")
-                                .add("max", "max")
-                ));
+        return Message.make().add("name*", closure -> (
+                closure.add("required", "xxx")
+                        .add("string", "xxx")
+        )).add("email*", closure -> (
+                closure.add("email", "format")
+                        .add("max", "max")
+        )).add("phone.max", "phone max length 11");
     }
 }

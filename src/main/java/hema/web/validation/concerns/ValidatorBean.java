@@ -1,9 +1,7 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.MessageBag;
-import hema.web.validation.contracts.Validator;
 import hema.web.validation.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
@@ -38,6 +36,8 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     private final String dotPlaceholder;
 
     private MessageBag messageBag = null;
+
+    private boolean stopOnFirstFailure = false;
 
     ValidatorBean(Translation translator, Inflector inflector, Map<String, Object> data, Map<String, Object[]> rules,
                   Haystack<Object> messages, Haystack<String> attributes) {
@@ -140,6 +140,10 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     public boolean passes() {
         messageBag = applicationContext.getBean(MessageBag.class);
 
+        if (stopOnFirstFailure && !messageBag.isEmpty()) {
+            return false;
+        }
+
         return messageBag.isEmpty();
     }
 
@@ -234,10 +238,14 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
     }
 
-    private String[] getRules(String attribute,String[] rules) {
+    private String[] getRules(String attribute, String[] rules) {
 
 
+    }
 
+    public Validator stopOnFirstFailure(boolean stopOnFirstFailure) {
+        this.stopOnFirstFailure = stopOnFirstFailure;
+        return this;
     }
 
     void setFallbackMessage(Map<String, String> fallbackMessage) {

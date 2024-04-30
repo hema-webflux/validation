@@ -1,7 +1,6 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.contracts.*;
 import hema.web.validation.translation.Translation;
 import org.springframework.context.ApplicationContext;
@@ -35,8 +34,8 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     }
 
     @Override
-    public hema.web.validation.contracts.Validator make(Map<String, Object> data, ValidateRule validateRule,
-                                                        Haystack<Object> messages, Haystack<String> attributes) {
+    public Validator make(Map<String, Object> data, ValidateRule validateRule,
+                          Haystack<Object> messages, Haystack<String> attributes) {
 
         ValidatorBean validator = (ValidatorBean) resolve(data, validateRule, messages, attributes);
 

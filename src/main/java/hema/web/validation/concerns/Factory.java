@@ -1,7 +1,7 @@
-package hema.web.validation.contracts;
+package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.concerns.haystack.Haystack;
+import hema.web.validation.contracts.ValidateRule;
 import hema.web.validation.translation.Translation;
 
 import java.util.Map;

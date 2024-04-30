@@ -1,6 +1,6 @@
-package hema.web.validation.concerns.haystack;
+package hema.web.validation;
 
-import hema.web.validation.Attribute;
+import hema.web.validation.concerns.Haystack;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package hema.web.validation.concerns.haystack;
+package hema.web.validation.concerns;
 
 import hema.web.contracts.anonymous.Nullable;
 

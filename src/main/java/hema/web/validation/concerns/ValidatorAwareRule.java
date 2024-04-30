@@ -1,4 +1,4 @@
-package hema.web.validation.contracts;
+package hema.web.validation.concerns;
 
 public interface ValidatorAwareRule {
 

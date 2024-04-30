@@ -1,5 +1,5 @@
 import hema.web.validation.concerns.FormatsMessages;
-import hema.web.validation.concerns.haystack.MessageHaystack;
+import hema.web.validation.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ public class FormatsMessageTest {
 
     private static final FormatsMessages formatsMessages = new Format();
 
-    private static final MessageHaystack haystack = new MessageHaystack(new HashMap<>(),new HashSet<>());
+    private static final Message haystack = new Message(new HashMap<>(), new HashSet<>(), false);
 
     @BeforeAll
     public static void beforeAddRule() {
@@ -27,12 +27,12 @@ public class FormatsMessageTest {
     @Test
     public void testGetFromLocal() {
 
-        Assertions.assertEquals(formatsMessages.getFromLocalArray("name","required", haystack),"The name is required.");
-        Assertions.assertEquals(formatsMessages.getFromLocalArray("email_verify","email", haystack),"Must be in email format.");
+        Assertions.assertEquals(formatsMessages.getFromLocalArray("name", "required", haystack), "The name is required.");
+        Assertions.assertEquals(formatsMessages.getFromLocalArray("email_verify", "email", haystack), "Must be in email format.");
 
-        Assertions.assertTrue(formatsMessages.getFromLocalArray("email_confirm","max", haystack).contains("max length"));
+        Assertions.assertTrue(formatsMessages.getFromLocalArray("email_confirm", "max", haystack).contains("max length"));
 
-        Assertions.assertTrue(formatsMessages.getFromLocalArray("avatar","url", haystack).isEmpty());
+        Assertions.assertTrue(formatsMessages.getFromLocalArray("avatar", "url", haystack).isEmpty());
     }
 
     static class Format implements FormatsMessages {
@@ -40,6 +40,11 @@ public class FormatsMessageTest {
         @Override
         public String replacePlaceholderInString(String attribute) {
             return null;
+        }
+
+        @Override
+        public String getMessage(String attribute, String rule) {
+            return "";
         }
     }
 

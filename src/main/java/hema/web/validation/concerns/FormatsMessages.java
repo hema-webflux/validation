@@ -1,6 +1,5 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.concerns.haystack.Haystack;
 import hema.web.validation.message.Str;
 
 import java.util.regex.Pattern;
