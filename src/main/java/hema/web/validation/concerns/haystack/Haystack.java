@@ -4,14 +4,15 @@ import hema.web.contracts.anonymous.Nullable;
 
 import java.util.Map;
 
-public sealed abstract class Haystack<T> implements Nullable permits AttributeHaystack, MessageHaystack {
+public abstract class Haystack<T> implements Nullable {
 
     protected final Map<String, T> haystacks;
 
-    private boolean nullable = false;
+    private final boolean anonymous;
 
-    public Haystack(Map<String, T> haystacks) {
+    public Haystack(Map<String, T> haystacks, boolean anonymous) {
         this.haystacks = haystacks;
+        this.anonymous = anonymous;
     }
 
     public abstract Haystack<T> add(String needle, T value);
@@ -26,11 +27,6 @@ public sealed abstract class Haystack<T> implements Nullable permits AttributeHa
 
     @Override
     public boolean isNullable() {
-        return nullable;
-    }
-
-    public Haystack<T> setNullable(boolean nullable) {
-        this.nullable = nullable;
-        return this;
+        return anonymous;
     }
 }
