@@ -143,8 +143,6 @@ interface ValidateAttributes {
         return true;
     }
 
-    <T> T getValue(String attribute);
-
     default <T> boolean validateRequiredMapKeys(T value, Object[] parameters) {
 
         if (!validateMap(value)) {
@@ -358,10 +356,6 @@ interface ValidateAttributes {
             return false;
         }
 
-        if (value instanceof Collection<?> && ((Collection<?>) value).isEmpty()) {
-            return false;
-        }
-
         return true;
     }
 
@@ -376,6 +370,10 @@ interface ValidateAttributes {
     default <T> boolean validateTryEnum(T value, Class<T> type) {
         return type.isInstance(value);
     }
+
+    void shouldBeNumeric(String attribute,String rule);
+
+    <T> T getValue(String attribute);
 
     boolean validatePresent(String attribute);
 }

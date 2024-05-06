@@ -9,7 +9,34 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 
-final class ValidatorBean extends ValidateRules implements Validator, ValidateAttributes, FormatsMessages {
+final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessages {
+
+    private Set<String> implicitRules = Set.of(
+            "Accepted",
+            "Required",
+            "String",
+            "Url",
+            "Integer",
+            "Numeric",
+            "Json",
+            "Map",
+            "Array",
+            "Uppercase",
+            "Lowercase",
+            "Email",
+            "Phone",
+            "Date",
+            "Bool",
+            "IdCard",
+            "BankCard");
+
+    private Set<String> dependentRules = Set.of("Same", "Confirmed", "After", "Before");
+
+    private final String[] sizeRules = {"max", "min", "between"};
+
+    private Set<String> numericRule = Set.of("Integer", "Numeric", "Decimal");
+
+    private final String[] excludeRules = {"Exclude", "ExcludeIf", "ExcludeUnless", "ExcludeWith", "ExcludeWithout"};
 
     private ApplicationContext applicationContext;
 
@@ -46,10 +73,44 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
 
         this.translator = translator;
         this.inflector = inflector;
-        this.data = data;
+        this.data = parseData(data);
         this.initialRules = rules;
         this.messages = messages;
         this.attributes = attributes;
+    }
+
+    private boolean isImplicit(String rule) {
+        return implicitRules.contains(rule);
+    }
+
+    private boolean hasRule(String needle, String[] haystack) {
+
+        for (String rule : haystack) {
+            if (rule.equals(needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> parseData(Map<String, Object> data) {
+
+        Map<String, Object> newData = new HashMap<>(data);
+
+        data.forEach((key, value) -> {
+
+            if (value instanceof Map<?, ?>) {
+                value = parseData((Map<String, Object>) value);
+            }
+
+            key = replacePlaceholderInString(key);
+
+            newData.put(key, value);
+        });
+
+        return newData;
     }
 
     private void validateAttribute(String attribute, Object[] parameters) {
@@ -83,14 +144,6 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
         return false;
     }
 
-    /**
-     * Determine if the field is present, or the rule implies required.
-     *
-     * @param rule      Validate rule.
-     * @param attribute Field.
-     * @param value     Input value.
-     * @return Boolean
-     */
     private boolean presentOrRuleIsImplicit(String rule, String attribute, Object value) {
 
         if (validateString(value) && ((String) value).isBlank()) {
@@ -192,7 +245,7 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
             return translator.get(translatorKey, "en");
         }
 
-        String message = getFromLocalArray(attribute, lowerRule, fallbackMessage);
+        String message = getFromLocalArray(attribute, lowerRule, messages);
 
         return message.isEmpty() ? translatorKey : message;
     }
@@ -211,12 +264,7 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     }
 
     private String getAttributeType(String attribute) {
-
-        if (hasRule(attribute, numericRule)) {
-            return "numeric";
-        }
-
-        return "string";
+        return numericRule.contains(attribute) ? "numeric" : "string";
     }
 
     @Override
@@ -239,8 +287,14 @@ final class ValidatorBean extends ValidateRules implements Validator, ValidateAt
     }
 
     private String[] getRules(String attribute, String[] rules) {
+        return new String[0];
+    }
 
-
+    @Override
+    public void shouldBeNumeric(String attribute, String rule) {
+        if (validateNumeric(getValue(attribute))) {
+            numericRule.add(rule);
+        }
     }
 
     public Validator stopOnFirstFailure(boolean stopOnFirstFailure) {
