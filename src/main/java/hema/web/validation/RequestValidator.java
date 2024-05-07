@@ -7,12 +7,16 @@ import hema.web.validation.concerns.ValidatorAwareRule;
 import hema.web.validation.exception.UnauthorizedException;
 import hema.web.validation.exception.ValidationException;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class RequestValidator implements ValidatesWhenResolved, ValidatorAwareRule {
+public abstract class RequestValidator implements ValidatesWhenResolved, ValidatorAwareRule,
+        InitializingBean, ApplicationListener<ContextRefreshedEvent> {
 
     private Validator validator = null;
 
@@ -20,6 +24,16 @@ public abstract class RequestValidator implements ValidatesWhenResolved, Validat
 
     @Resource
     private ApplicationContext container;
+
+    @Override
+    public void afterPropertiesSet() throws ValidationException, UnauthorizedException {
+        validateResolved();
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        container = event.getApplicationContext();
+    }
 
     @Override
     public void validateResolved() throws ValidationException, UnauthorizedException {
