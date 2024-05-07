@@ -1,5 +1,5 @@
 import hema.web.validation.concerns.ValidatorConfiguration;
-import hema.web.validation.contracts.MessageBag;
+import hema.web.validation.concerns.MessageBag;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,7 +1,6 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.contracts.MessageBag;
 import hema.web.validation.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;

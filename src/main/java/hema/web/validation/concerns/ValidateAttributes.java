@@ -13,10 +13,6 @@ import java.util.regex.Pattern;
 
 interface ValidateAttributes {
 
-    default <T> boolean validateAccepted(T value) {
-        return validateRequired(value) && hasAcceptable(value);
-    }
-
     default <T> boolean validateRequiredIf(T value, Object[] parameters) throws HttpException {
 
         InvalidArgumentException.requireParameterCount(2, parameters, "acceptedIf");
@@ -24,22 +20,20 @@ interface ValidateAttributes {
         return true;
     }
 
-    private <T> boolean hasAcceptable(T value) {
-        return contains(value, new Object[]{"yes", "on", "1", 1, true, "true"});
+    default <T> boolean validateAccepted(T value) {
+        return validateRequired(value) && contains(value, new Object[]{"yes", "on", "1", 1, true, "true"});
     }
 
     default <T> boolean validateDeclined(T value) {
-        return validateRequired(value) && hasDeclined(value);
-    }
-
-    private <T> boolean hasDeclined(T value) {
-        return contains(value, new Object[]{"no", "off", "0", 0, false, "false"});
+        return validateRequired(value) && contains(value, new Object[]{"no", "off", "0", 0, false, "false"});
     }
 
     private <T> boolean contains(T value, Object[] acceptable) {
 
         for (Object accept : acceptable) {
-            if (value.equals(accept)) {
+            if (value.getClass().equals(String.class) && ((String) value).equalsIgnoreCase(accept.toString())) {
+                return true;
+            } else if (value.equals(accept)) {
                 return true;
             }
         }
@@ -371,7 +365,7 @@ interface ValidateAttributes {
         return type.isInstance(value);
     }
 
-    void shouldBeNumeric(String attribute,String rule);
+    void shouldBeNumeric(String attribute, String rule);
 
     <T> T getValue(String attribute);
 

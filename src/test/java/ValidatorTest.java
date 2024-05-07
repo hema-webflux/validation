@@ -1,7 +1,7 @@
 import hema.web.validation.RequestValidator;
 import hema.web.validation.Attribute;
 import hema.web.validation.Message;
-import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.concerns.ValidateRule;
 
 public class ValidatorTest extends RequestValidator {
 

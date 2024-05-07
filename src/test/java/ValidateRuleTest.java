@@ -1,5 +1,5 @@
 import hema.web.validation.concerns.ValidatorConfiguration;
-import hema.web.validation.contracts.ValidateRule;
+import hema.web.validation.concerns.ValidateRule;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
