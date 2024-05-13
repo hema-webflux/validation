@@ -29,10 +29,7 @@ public class TranslationConfiguration {
     public Loader loader() {
         return new FileLoader(
                 context.getBean(FileSystemResourceLoader.class),
-                new String[]{
-                        STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang",
-
-                }
+                new String[]{STR."\{ResourceLoader.CLASSPATH_URL_PREFIX}lang",}
         );
     }
 

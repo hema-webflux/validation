@@ -365,6 +365,21 @@ interface ValidateAttributes {
         return type.isInstance(value);
     }
 
+    private Object[] convertValuesToBoolean(String[] values) {
+        return Arrays.stream(values).map(value ->
+                switch (value.toLowerCase()) {
+                    case "true" -> true;
+                    case "false" -> false;
+                    default -> value;
+                }).toArray(Object[]::new);
+    }
+
+    private String[] convertValuesToNull(String[] values) {
+        return Arrays.stream(values)
+                .map(value -> value.equalsIgnoreCase("null") ? null : value)
+                .toArray(String[]::new);
+    }
+
     void shouldBeNumeric(String attribute, String rule);
 
     <T> T getValue(String attribute);
