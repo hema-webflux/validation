@@ -15,7 +15,7 @@ interface ValidateAttributes {
 
     default <T> boolean validateRequiredIf(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(2, parameters, "acceptedIf");
+        requireParameterCount(2, parameters, "acceptedIf");
 
         return true;
     }
@@ -74,7 +74,7 @@ interface ValidateAttributes {
 
     default <T> boolean validateRequiredUnless(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(2, parameters, "requiredUnless");
+        requireParameterCount(2, parameters, "requiredUnless");
 
         return true;
     }
@@ -156,14 +156,14 @@ interface ValidateAttributes {
 
     default <T> boolean validateMin(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, parameters, "min");
+        requireParameterCount(1, parameters, "min");
 
         return getSize(value) >= (int) parameters[0];
     }
 
     default <T> boolean validateMax(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, parameters, "max");
+        requireParameterCount(1, parameters, "max");
 
         return getSize(value) <= (int) parameters[0];
     }
@@ -261,7 +261,7 @@ interface ValidateAttributes {
 
     default <T> boolean validateSize(T value, Object[] parameters) throws HttpException {
 
-        InvalidArgumentException.requireParameterCount(1, parameters, "size");
+        requireParameterCount(1, parameters, "size");
 
         return BigInteger.valueOf((long) value).equals(parameters[0]);
     }
@@ -370,4 +370,10 @@ interface ValidateAttributes {
     <T> T getValue(String attribute);
 
     boolean validatePresent(String attribute);
+
+    private void requireParameterCount(int count, Object[] parameters, String rule) throws InvalidArgumentException {
+        if (parameters.length < count) {
+            throw new InvalidArgumentException(500, String.format("Validation rule %s requires at least %s parameters", rule, count));
+        }
+    }
 }

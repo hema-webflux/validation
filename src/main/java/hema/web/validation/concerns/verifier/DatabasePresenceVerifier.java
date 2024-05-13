@@ -1,7 +1,5 @@
 package hema.web.validation.concerns.verifier;
 
-import hema.web.validation.concerns.PresenceVerifier;
-
 public interface DatabasePresenceVerifier  extends PresenceVerifier {
 
     /**
