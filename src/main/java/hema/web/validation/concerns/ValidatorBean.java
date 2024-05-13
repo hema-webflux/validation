@@ -1,7 +1,8 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.translation.Translation;
+import hema.web.validation.concerns.verifier.DatabasePresenceVerifier;
+import hema.web.validation.concerns.translation.Translation;
 import hema.web.validation.exception.ValidationException;
 import hema.web.validation.message.Str;
 import org.springframework.context.ApplicationContext;
@@ -9,6 +10,44 @@ import org.springframework.context.ApplicationContext;
 import java.util.*;
 
 final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessages {
+
+    private ApplicationContext applicationContext;
+
+    private final Translation translator;
+
+    private final Inflector inflector;
+
+    private Map<String, String> fallbackMessage;
+
+    private Map<String, String> replacers;
+
+    private Map<String, Validator.ValidateRulePredicate> extensions;
+
+    private final Map<String, Object> data;
+
+    private final Haystack<Object> customMessages;
+
+    private final Haystack<String> customAttributes;
+
+    private DatabasePresenceVerifier verifier = null;
+
+    /**
+     * The initial rules provided.
+     */
+    private Map<String, Object[]> initialRules;
+
+    /**
+     * The rules to be applied to the data.
+     */
+    private Map<String, Object[]> rules;
+
+    private Set<ValidateHookConsumer> after;
+
+    private final String dotPlaceholder;
+
+    private MessageBag messageBag = null;
+
+    private boolean stopOnFirstFailure = false;
 
     private Set<String> implicitRules = Set.of(
             "Accepted",
@@ -37,34 +76,6 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
     private final String[] excludeRules = {"Exclude", "ExcludeIf", "ExcludeUnless", "ExcludeWith", "ExcludeWithout"};
 
-    private ApplicationContext applicationContext;
-
-    private final Translation translator;
-
-    private final Inflector inflector;
-
-    private Map<String, String> fallbackMessage;
-
-    private Map<String, String> replacers;
-
-    private Map<String, Validator.ValidateRulePredicate> extensions;
-
-    private final Map<String, Object> data;
-
-    private final Haystack<Object> messages;
-
-    private final Haystack<String> attributes;
-
-    private final Map<String, Object[]> initialRules;
-
-    private Set<ValidateHookConsumer> after;
-
-    private final String dotPlaceholder;
-
-    private MessageBag messageBag = null;
-
-    private boolean stopOnFirstFailure = false;
-
     ValidatorBean(Translation translator, Inflector inflector, Map<String, Object> data, Map<String, Object[]> rules,
                   Haystack<Object> messages, Haystack<String> attributes) {
 
@@ -74,8 +85,10 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
         this.inflector = inflector;
         this.data = parseData(data);
         this.initialRules = rules;
-        this.messages = messages;
-        this.attributes = attributes;
+        this.customMessages = messages;
+        this.customAttributes = attributes;
+
+        this.setRules(rules);
     }
 
     private boolean isImplicit(String rule) {
@@ -110,6 +123,31 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
         });
 
         return newData;
+    }
+
+    /**
+     * Set the validation rules.
+     *
+     * @param rules Custom rules.
+     */
+    private void setRules(Map<String, Object[]> rules) {
+
+        Map<String, Object[]> newRules = new HashMap<>(rules);
+
+        rules.forEach((key, value) -> {
+            newRules.put(key.replace("\\.", dotPlaceholder), value);
+        });
+
+        this.initialRules = newRules;
+
+        this.rules.clear();
+
+        addRules(rules);
+
+    }
+
+    private void addRules(Map<String, Object[]> rules) {
+
     }
 
     private void validateAttribute(String attribute, Object[] parameters) {
@@ -164,7 +202,7 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
     @Override
     public boolean fails() {
-        return false;
+        return !passes();
     }
 
     @Override
@@ -196,6 +234,11 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
             return false;
         }
 
+        rules();
+
+        // Here we will spin through all of the "after" hook.
+        after.forEach(consumer -> consumer.accept(this));
+
         return messageBag.isEmpty();
     }
 
@@ -216,7 +259,7 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
         attribute = replacePlaceholderInString(attribute);
 
-        String inlineMessage = getFromLocalArray(attribute, rule, messages);
+        String inlineMessage = getFromLocalArray(attribute, rule, customMessages);
 
         if (!inlineMessage.isEmpty()) {
             return inlineMessage;
@@ -244,7 +287,7 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
             return translator.get(translatorKey, "en");
         }
 
-        String message = getFromLocalArray(attribute, lowerRule, messages);
+        String message = getFromLocalArray(attribute, lowerRule, customMessages);
 
         return message.isEmpty() ? translatorKey : message;
     }
@@ -307,6 +350,10 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
     void setApplication(ApplicationContext application) {
         this.applicationContext = application;
+    }
+
+    void setPresenceVerifier(DatabasePresenceVerifier verifier) {
+        this.verifier = verifier;
     }
 
     void addImplicitExtensions(Map<String, Validator.ValidateRulePredicate> implicitRules) {

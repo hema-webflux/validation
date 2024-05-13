@@ -122,6 +122,10 @@ public interface ValidateRule {
 
     <T> ValidateRule creationEnum(@NonNull Class<T> kind);
 
+    ValidateRule rawRule(String rules);
+
+    ValidateRule rawRule(String[] rules);
+
     Map<String, Object[]> rules();
 
 }

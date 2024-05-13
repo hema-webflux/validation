@@ -1,7 +1,7 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.translation.Translation;
+import hema.web.validation.concerns.translation.Translation;
 
 import java.util.Map;
 

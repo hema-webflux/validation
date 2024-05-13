@@ -1,4 +1,4 @@
-package hema.web.validation.translation;
+package hema.web.validation.concerns.translation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +27,10 @@ final class FileLoader implements Loader {
         return loadJsonPaths(locale);
     }
 
-    private Map<String,Object> loadPaths(){
-        Map<String,Object> map = new HashMap<>();
+    private Map<String, Object> loadPaths() {
+        Map<String, Object> map = new HashMap<>();
 
-
+        return null;
     }
 
     /**

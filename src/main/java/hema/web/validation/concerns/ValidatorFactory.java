@@ -1,7 +1,8 @@
 package hema.web.validation.concerns;
 
 import hema.web.inflector.Inflector;
-import hema.web.validation.translation.Translation;
+import hema.web.validation.concerns.verifier.DatabasePresenceVerifier;
+import hema.web.validation.concerns.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -27,16 +28,21 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
 
     private Map<String, Validator.ValidateRulePredicate> dependents = null;
 
+    private DatabasePresenceVerifier verifier = null;
+
     public ValidatorFactory(ApplicationContext application, Translation translation) {
         this.application = application;
         this.translation = translation;
     }
 
     @Override
-    public Validator make(Map<String, Object> data, ValidateRule validateRule,
-                          Haystack<Object> messages, Haystack<String> attributes) {
+    public Validator make(Map<String, Object> data, ValidateRule validateRule, Haystack<Object> messages, Haystack<String> attributes) {
 
         ValidatorBean validator = (ValidatorBean) resolve(data, validateRule, messages, attributes);
+
+        if (Objects.nonNull(verifier)) {
+            validator.setPresenceVerifier(verifier);
+        }
 
         validator.setApplication(this.application);
 
@@ -100,5 +106,9 @@ final class ValidatorFactory implements Factory, ApplicationListener<ContextRefr
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         this.application = event.getApplicationContext();
+    }
+
+    void setPresenceVerifier(DatabasePresenceVerifier presenceVerifier) {
+        this.verifier = presenceVerifier;
     }
 }

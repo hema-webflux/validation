@@ -1,7 +1,7 @@
 package hema.web.validation.concerns;
 
-import hema.web.validation.translation.Translation;
-import hema.web.validation.translation.TranslationConfiguration;
+import hema.web.validation.concerns.verifier.DatabasePresenceVerifier;
+import hema.web.validation.concerns.translation.Translation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 
@@ -9,7 +9,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 @Configuration
-@Import({TranslationConfiguration.class})
 public class ValidatorConfiguration {
 
     private final ApplicationContext context;
@@ -21,7 +20,12 @@ public class ValidatorConfiguration {
     @Bean
     @Lazy
     public Factory validatorFactory() {
-        return new ValidatorFactory(context, context.getBean(Translation.class));
+
+        ValidatorFactory factory = new ValidatorFactory(context, context.getBean(Translation.class));
+
+        factory.setPresenceVerifier(context.getBean(DatabasePresenceVerifier.class));
+
+        return factory;
     }
 
     @Bean
