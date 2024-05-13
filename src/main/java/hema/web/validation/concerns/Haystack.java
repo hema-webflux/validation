@@ -1,6 +1,6 @@
 package hema.web.validation.concerns;
 
-import hema.web.contracts.anonymous.Nullable;
+import hema.web.contracts.nullable.Nullable;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public abstract class Haystack<T> implements Nullable {
     }
 
     @Override
-    public boolean isNullable() {
+    public boolean isAnonymous() {
         return anonymous;
     }
 }

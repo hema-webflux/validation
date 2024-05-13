@@ -1,6 +1,6 @@
 package hema.web.validation.concerns.verifier;
 
-class DatabasePresenceVerifierBean implements DatabasePresenceVerifier {
+final class DatabasePresenceVerifierBean implements DatabasePresenceVerifier {
 
     private String connection;
 
