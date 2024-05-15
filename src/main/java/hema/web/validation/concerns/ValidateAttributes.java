@@ -185,6 +185,13 @@ interface ValidateAttributes {
         return String.valueOf(value).trim().length();
     }
 
+    default <T> boolean validateAfterOrEqual(String attribute, T value, Object[] parameters) {
+
+        requireParameterCount(1, parameters, "afterOrEqual");
+
+        return true;
+    }
+
     default <T> boolean validateIn(T value, Object[] parameters) {
 
         if (parameters.length == 0) {
@@ -380,15 +387,43 @@ interface ValidateAttributes {
                 .toArray(String[]::new);
     }
 
+    default <T> boolean validateSame(T value, Object[] parameters) {
+
+        requireParameterCount(1, parameters, "same");
+
+        Object other = getValue((String) parameters[0]);
+
+        return other.equals(value);
+    }
+
+    private boolean compare(Date first, Date second, String operator) throws InvalidArgumentException {
+        return switch (operator) {
+            case "<" -> first.after(second);
+            case ">" -> first.before(second);
+            case "<=" -> first.after(second) || first.equals(second);
+            case ">=" -> first.before(second) || first.equals(second);
+            case "=" -> first.equals(second);
+            default -> throw new InvalidArgumentException();
+        };
+    }
+
+    private void requireParameterCount(int count, Object[] parameters, String rule) throws InvalidArgumentException {
+        if (Array.getLength(parameters) < count) {
+            throw new InvalidArgumentException(500, STR."Validation rule \{rule} requires at least \{count} parameters");
+        }
+    }
+
+    private Object trim(Object value) {
+        return value.getClass().equals(String.class) ? value.toString().trim() : value;
+    }
+
+    private boolean isSameType(Object first, Object second) {
+        return first.getClass().getTypeName().equals(second.getClass().getTypeName());
+    }
+
     void shouldBeNumeric(String attribute, String rule);
 
     <T> T getValue(String attribute);
 
     boolean validatePresent(String attribute);
-
-    private void requireParameterCount(int count, Object[] parameters, String rule) throws InvalidArgumentException {
-        if (parameters.length < count) {
-            throw new InvalidArgumentException(500, String.format("Validation rule %s requires at least %s parameters", rule, count));
-        }
-    }
 }
