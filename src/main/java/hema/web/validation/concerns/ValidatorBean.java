@@ -243,9 +243,8 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getValue(String attribute) {
-        return (T) data.get(attribute);
+    public Object getValue(String attribute) {
+        return data.get(attribute);
     }
 
     @Override
@@ -334,7 +333,7 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
     @Override
     public void shouldBeNumeric(String attribute, String rule) {
-        if (validateNumeric(getValue(attribute))) {
+        if (validateNumeric(String.valueOf(getValue(attribute)))) {
             numericRule.add(rule);
         }
     }

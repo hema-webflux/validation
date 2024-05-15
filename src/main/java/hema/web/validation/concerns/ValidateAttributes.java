@@ -13,22 +13,22 @@ import java.util.regex.Pattern;
 
 interface ValidateAttributes {
 
-    default <T> boolean validateRequiredIf(T value, Object[] parameters) throws HttpException {
+    default boolean validateRequiredIf(Object value, Object[] parameters) throws HttpException {
 
         requireParameterCount(2, parameters, "acceptedIf");
 
         return true;
     }
 
-    default <T> boolean validateAccepted(T value) {
+    default boolean validateAccepted(Object value) {
         return validateRequired(value) && contains(value, new Object[]{"yes", "on", "1", 1, true, "true"});
     }
 
-    default <T> boolean validateDeclined(T value) {
+    default boolean validateDeclined(Object value) {
         return validateRequired(value) && contains(value, new Object[]{"no", "off", "0", 0, false, "false"});
     }
 
-    private <T> boolean contains(T value, Object[] acceptable) {
+    private boolean contains(Object value, Object[] acceptable) {
 
         for (Object accept : acceptable) {
             if (value.getClass().equals(String.class) && ((String) value).equalsIgnoreCase(accept.toString())) {
@@ -41,7 +41,7 @@ interface ValidateAttributes {
         return false;
     }
 
-    default <T> boolean before(T value, Object[] parameters) {
+    default boolean before(Object value, Object[] parameters) {
 
         if (!validateDate(value)) {
             return false;
@@ -50,11 +50,11 @@ interface ValidateAttributes {
         return DateValidator.isTimeBeforeSpecificTime((String) value, String.valueOf(parameters[0]));
     }
 
-    default <T> boolean after(T value, Object[] parameters) {
+    default boolean after(Object value, Object[] parameters) {
         return DateValidator.isTimeAfterSpecificTime((String) value, String.valueOf(parameters[0]));
     }
 
-    default <T> boolean dateEquals(T value, Object[] parameters) {
+    default boolean dateEquals(Object value, Object[] parameters) {
 
         if (!validateDate(value)) {
             return false;
@@ -63,7 +63,7 @@ interface ValidateAttributes {
         return DateValidator.isEquals((String) value, String.valueOf(parameters[0]));
     }
 
-    default <T> boolean validateDate(T value) {
+    default boolean validateDate(Object value) {
 
         if (!validateString(value)) {
             return false;
@@ -72,14 +72,14 @@ interface ValidateAttributes {
         return DateValidator.isDateFormat(DateValidator.DEFAULT_FORMAT, String.valueOf(value));
     }
 
-    default <T> boolean validateRequiredUnless(T value, Object[] parameters) throws HttpException {
+    default boolean validateRequiredUnless(Object value, Object[] parameters) throws HttpException {
 
         requireParameterCount(2, parameters, "requiredUnless");
 
         return true;
     }
 
-    default <T> boolean validateRequiredWith(T value, Object[] parameters) {
+    default boolean validateRequiredWith(Object value, Object[] parameters) {
 
         if (!allFailingRequired(parameters)) {
             return validateRequired(value);
@@ -88,7 +88,7 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateRequiredWithAll(T value, Object[] parameters) {
+    default boolean validateRequiredWithAll(Object value, Object[] parameters) {
 
         if (!anyFailingRequired(parameters)) {
             return validateRequired(value);
@@ -97,7 +97,7 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateRequiredWithOut(T value, Object[] parameters) {
+    default boolean validateRequiredWithOut(Object value, Object[] parameters) {
 
         if (anyFailingRequired(parameters)) {
             return validateRequired(value);
@@ -106,7 +106,7 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateRequiredWithOutAll(T value, Object[] parameters) {
+    default boolean validateRequiredWithOutAll(Object value, Object[] parameters) {
 
         if (allFailingRequired(parameters)) {
             return validateRequired(value);
@@ -137,7 +137,7 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateRequiredMapKeys(T value, Object[] parameters) {
+    default boolean validateRequiredMapKeys(Object value, Object[] parameters) {
 
         if (!validateMap(value)) {
             return false;
@@ -154,21 +154,21 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateMin(T value, Object[] parameters) throws HttpException {
+    default boolean validateMin(Object value, Object[] parameters) throws HttpException {
 
         requireParameterCount(1, parameters, "min");
 
         return getSize(value) >= (int) parameters[0];
     }
 
-    default <T> boolean validateMax(T value, Object[] parameters) throws HttpException {
+    default boolean validateMax(Object value, Object[] parameters) throws HttpException {
 
         requireParameterCount(1, parameters, "max");
 
         return getSize(value) <= (int) parameters[0];
     }
 
-    private <T> int getSize(T value) {
+    private int getSize(Object value) {
 
         if (validateArray(value)) {
             return Array.getLength(value);
@@ -185,14 +185,14 @@ interface ValidateAttributes {
         return String.valueOf(value).trim().length();
     }
 
-    default <T> boolean validateAfterOrEqual(String attribute, T value, Object[] parameters) {
+    default boolean validateAfterOrEqual(String attribute, Object value, Object[] parameters) {
 
         requireParameterCount(1, parameters, "afterOrEqual");
 
         return true;
     }
 
-    default <T> boolean validateIn(T value, Object[] parameters) {
+    default boolean validateIn(Object value, Object[] parameters) {
 
         if (parameters.length == 0) {
             return false;
@@ -201,7 +201,7 @@ interface ValidateAttributes {
         return Set.of(parameters).contains(value);
     }
 
-    default <T> boolean validateEmail(String value) {
+    default boolean validateEmail(String value) {
         return Pattern
                 .compile("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$")
                 .matcher(value)
@@ -266,7 +266,7 @@ interface ValidateAttributes {
         }
     }
 
-    default <T> boolean validateSize(T value, Object[] parameters) throws HttpException {
+    default boolean validateSize(Object value, Object[] parameters) throws HttpException {
 
         requireParameterCount(1, parameters, "size");
 
@@ -289,7 +289,7 @@ interface ValidateAttributes {
         return value.toUpperCase().equals(value);
     }
 
-    default <T> boolean validateBool(T value) {
+    default boolean validateBool(Object value) {
 
         Set<Object> acceptable = Set.of(true, false, "true", "false", 1, 0, "1", "0");
 
@@ -335,11 +335,11 @@ interface ValidateAttributes {
         }
     }
 
-    default <T> boolean validateString(T value) {
+    default boolean validateString(Object value) {
         return value instanceof String;
     }
 
-    default <T> boolean validateRequired(T value) {
+    default boolean validateRequired(Object value) {
 
         if (Objects.isNull(value)) {
             return false;
@@ -360,15 +360,15 @@ interface ValidateAttributes {
         return true;
     }
 
-    default <T> boolean validateMap(T value) {
+    default boolean validateMap(Object value) {
         return value instanceof Map;
     }
 
-    default <T> boolean validateArray(T value) {
+    default boolean validateArray(Object value) {
         return value.getClass().isArray();
     }
 
-    default <T> boolean validateTryEnum(T value, Class<T> type) {
+    default boolean validateTryEnum(Object value, Class type) {
         return type.isInstance(value);
     }
 
@@ -387,7 +387,7 @@ interface ValidateAttributes {
                 .toArray(String[]::new);
     }
 
-    default <T> boolean validateSame(T value, Object[] parameters) {
+    default boolean validateSame(Object value, Object[] parameters) {
 
         requireParameterCount(1, parameters, "same");
 
@@ -423,7 +423,7 @@ interface ValidateAttributes {
 
     void shouldBeNumeric(String attribute, String rule);
 
-    <T> T getValue(String attribute);
+    Object getValue(String attribute);
 
     boolean validatePresent(String attribute);
 }
