@@ -124,8 +124,6 @@ public interface ValidateRule {
 
     ValidateRule rawRule(String rules);
 
-    ValidateRule rawRule(String[] rules);
-
     Map<String, Object[]> rules();
 
 }
