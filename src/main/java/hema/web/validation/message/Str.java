@@ -1,6 +1,6 @@
 package hema.web.validation.message;
 
-import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,7 +80,7 @@ public class Str {
     }
 
     protected static void appendRandomChar(StringBuilder buffer, String chars, int length) {
-        Random random = new Random();
+        SplittableRandom random = new SplittableRandom();
         for (int i = 0; i < length; i++) {
             int number = random.nextInt(62);
             buffer.append(chars.charAt(number));
