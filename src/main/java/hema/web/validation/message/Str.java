@@ -1,5 +1,6 @@
 package hema.web.validation.message;
 
+import java.util.Arrays;
 import java.util.SplittableRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +62,7 @@ public class Str {
 
         StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
-            matcher.appendReplacement(buffer, STR."\\\\\{matcher.group()}");
+            matcher.appendReplacement(buffer, STR."\\\{matcher.group()}");
         }
         matcher.appendTail(buffer);
 
@@ -85,6 +86,16 @@ public class Str {
             int number = random.nextInt(62);
             buffer.append(chars.charAt(number));
         }
+    }
+
+    public static String studly(String value) {
+
+        String camelCase = Arrays.stream(value.split("_"))
+                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+                .reduce((first, second) -> first + second)
+                .orElse("");
+
+        return camelCase.substring(0, 1).toUpperCase() + camelCase.substring(1);
     }
 
     public static String ucFirst(String value) {

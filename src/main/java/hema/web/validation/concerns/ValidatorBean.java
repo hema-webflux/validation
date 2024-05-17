@@ -8,6 +8,9 @@ import hema.web.validation.message.Str;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessages {
 
@@ -30,6 +33,10 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
     private final Haystack<String> customAttributes;
 
     private DatabasePresenceVerifier verifier = null;
+
+    private Map<String, List<String>> implicitAttributes = null;
+
+    private Object currenRule = null;
 
     /**
      * The initial rules provided.
@@ -150,25 +157,81 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
     }
 
-    private void validateAttribute(String attribute, Object[] parameters) {
+    private void validateAttribute(String attribute, Object rule) {
 
-        if (parameters.length == 0) {
+        currenRule = rule;
+
+        final Object[] ruleParsers = ValidationRuleParser.parse(rule);
+
+        String validateRule = ruleParsers[0].toString();
+
+        if (validateRule.isBlank()) {
             return;
         }
 
-        if (dependentRules.contains((String) parameters[0])) {
+        String[] parameters = (String[]) ruleParsers[1];
 
+        if (dependentRules.contains(validateRule)) {
+
+            parameters = replaceDotInParameters(parameters);
+
+            List<String> keys = getExplicitKeys(attribute);
+
+            if (!keys.isEmpty()) {
+                parameters = replaceAsterisksInParameters(parameters, keys);
+            }
         }
 
-        Object value = data.get(attribute);
-
-        boolean validatable = isValidatable((String) parameters[0], attribute, value);
+        Object value = getValue(attribute);
 
     }
 
     private String[] replaceDotInParameters(String[] parameters) {
         return Arrays.stream(parameters)
-                .map(attribute -> attribute.replace("\\.", dotPlaceholder))
+                .map(field -> field.replace("\\.", dotPlaceholder))
+                .toArray(String[]::new);
+    }
+
+    private List<String> getExplicitKeys(String attribute) {
+
+        attribute = getPrimaryAttribute(attribute);
+
+        String pattern = Str.regexQuote(attribute, "#").replace("\\*", "([^\\.]+)");
+
+        Matcher matcher = Pattern.compile(pattern).matcher(attribute);
+
+        List<String> matches = new ArrayList<>();
+
+        while (matcher.find()) {
+            IntStream.range(0, matcher.groupCount()).forEach(idx -> matches.add(matcher.group(idx + 1)));
+        }
+
+        if (!matches.isEmpty()) {
+            return matches;
+        }
+
+        return new ArrayList<>();
+    }
+
+    private String getPrimaryAttribute(String attribute) {
+
+        Set<String> attributes = implicitAttributes.keySet();
+
+        for (String unparsed : attributes) {
+
+            if (implicitAttributes.get(unparsed).contains(attribute)) {
+                return unparsed;
+            }
+
+        }
+
+        return attribute;
+    }
+
+    private String[] replaceAsterisksInParameters(String[] parameters, List<String> keys) {
+
+        return Arrays.stream(parameters)
+                .map(field -> keys.stream().reduce(field, (acc, replace) -> acc.replaceFirst("\\*", replace)))
                 .toArray(String[]::new);
     }
 
