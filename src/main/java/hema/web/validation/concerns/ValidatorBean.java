@@ -98,8 +98,8 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
         this.setRules(rules);
     }
 
-    private boolean isImplicit(String rule) {
-        return implicitRules.contains(rule);
+    private boolean dependsOnOtherFields(String rule) {
+        return dependentRules.contains(rule);
     }
 
     private boolean hasRule(String needle, String[] haystack) {
@@ -171,7 +171,7 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
         String[] parameters = (String[]) ruleParsers[1];
 
-        if (dependentRules.contains(validateRule)) {
+        if (dependsOnOtherFields(validateRule)) {
 
             parameters = replaceDotInParameters(parameters);
 
@@ -184,6 +184,19 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
 
         Object value = getValue(attribute);
 
+    }
+
+    private boolean presentOrRuleIsImplicit(Object rule, String attribute, Object value) {
+
+        if (value.getClass().equals(String.class) && value.toString().trim().isEmpty()) {
+            return isImplicit(value.toString());
+        }
+
+        return validatePresent(attribute) || isImplicit(rule.toString());
+    }
+
+    private boolean isImplicit(String rule) {
+        return implicitRules.contains(rule);
     }
 
     private String[] replaceDotInParameters(String[] parameters) {
@@ -306,13 +319,8 @@ final class ValidatorBean implements Validator, ValidateAttributes, FormatsMessa
     }
 
     @Override
-    public Object getValue(String attribute) {
-        return data.get(attribute);
-    }
-
-    @Override
-    public boolean validatePresent(String attribute) {
-        return data.containsKey(attribute);
+    public Map<String, Object> validateData() {
+        return data;
     }
 
     public String getMessage(String attribute, String rule) {

@@ -423,7 +423,15 @@ interface ValidateAttributes {
 
     void shouldBeNumeric(String attribute, String rule);
 
-    Object getValue(String attribute);
+    default boolean validatePresent(String attribute) {
+        return validateData().containsKey(attribute);
+    }
 
-    boolean validatePresent(String attribute);
+    default Object getValue(String attribute) {
+        return validateData().get(attribute);
+    }
+
+    Map<String, Object> validateData();
+
+
 }
